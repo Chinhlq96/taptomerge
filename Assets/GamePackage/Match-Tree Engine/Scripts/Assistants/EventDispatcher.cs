@@ -192,6 +192,7 @@ namespace EventManager
 
 public enum EventID
 {
+	BlockTap,
     PostScore,
     GetHighScore,
 }
