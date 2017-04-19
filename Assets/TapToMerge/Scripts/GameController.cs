@@ -97,9 +97,22 @@ public class GameController : SingletonMonoBehaviour<GameController>
 			}
 		} else {
 			//int saveValue = blockTap.value;
+			int i;
+			for (i = 0; i < blocks.Length; i++)
+				if (blocks [i].value == (blockTap.value + 1)) {
+					break;
+				}
+			var newBlock = Instantiate (blocks [i], blockTap.transform.position - new Vector3 (0f, blockTap.offset, 0f), blockTap.transform.rotation);
+			newBlock.x = blockTap.x;
+			newBlock.y = blockTap.y;
+			newBlock.gameObject.GetComponent<Renderer> ().sortingOrder = blockTap.gameObject.GetComponent<Renderer> ().sortingOrder;
+
 			foreach (BlockController block in blocksActivated) {
+				//Move ve theo path
 				Destroy (block.gameObject);
 			}
+
+			board [newBlock.x, newBlock.y] = newBlock.GetComponent<BlockController> ();
 			/*for (int i = 0; i < blocks.Length; i++)
 				if (blocks [i].value == (saveValue + 1)) {
 					Instantiate (blocks [i], savePos.position - new Vector3(0,0.07f,0), savePos.transform.rotation);
