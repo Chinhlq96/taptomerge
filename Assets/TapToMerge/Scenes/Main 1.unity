@@ -108,18 +108,6 @@ NavMeshSettings:
     tileSize: 256
     accuratePlacement: 0
   m_NavMeshData: {fileID: 0}
---- !u!114 &33397816 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114421908253470168, guid: 54740380d27aa564ea9a75b61f1ee30a,
-    type: 2}
-  m_PrefabInternal: {fileID: 704130775}
-  m_Script: {fileID: 11500000, guid: cd1ebb7d6aefc0a4e83cda3ca90bb67a, type: 3}
---- !u!114 &97499050 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114122652754838288, guid: 54740380d27aa564ea9a75b61f1ee30a,
-    type: 2}
-  m_PrefabInternal: {fileID: 704130775}
-  m_Script: {fileID: 11500000, guid: cd1ebb7d6aefc0a4e83cda3ca90bb67a, type: 3}
 --- !u!1 &163484077
 GameObject:
   m_ObjectHideFlags: 0
@@ -675,54 +663,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
---- !u!1001 &704130775
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4367818065495798, guid: 54740380d27aa564ea9a75b61f1ee30a, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4367818065495798, guid: 54740380d27aa564ea9a75b61f1ee30a, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4367818065495798, guid: 54740380d27aa564ea9a75b61f1ee30a, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4367818065495798, guid: 54740380d27aa564ea9a75b61f1ee30a, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4367818065495798, guid: 54740380d27aa564ea9a75b61f1ee30a, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4367818065495798, guid: 54740380d27aa564ea9a75b61f1ee30a, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4367818065495798, guid: 54740380d27aa564ea9a75b61f1ee30a, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4367818065495798, guid: 54740380d27aa564ea9a75b61f1ee30a, type: 2}
-      propertyPath: m_RootOrder
-      value: 6
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 54740380d27aa564ea9a75b61f1ee30a, type: 2}
-  m_IsPrefabParent: 0
---- !u!114 &704130776 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114107782162019334, guid: 54740380d27aa564ea9a75b61f1ee30a,
-    type: 2}
-  m_PrefabInternal: {fileID: 704130775}
-  m_Script: {fileID: 11500000, guid: cd1ebb7d6aefc0a4e83cda3ca90bb67a, type: 3}
 --- !u!1 &718434457
 GameObject:
   m_ObjectHideFlags: 0
@@ -889,16 +829,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startPos: {fileID: 1838044228}
   blocks:
-  - {fileID: 704130776}
-  - {fileID: 114621275021618560, guid: 54740380d27aa564ea9a75b61f1ee30a, type: 2}
-  - {fileID: 114473858117669142, guid: 54740380d27aa564ea9a75b61f1ee30a, type: 2}
-  - {fileID: 114555110738798096, guid: 54740380d27aa564ea9a75b61f1ee30a, type: 2}
-  - {fileID: 114311351551819536, guid: 54740380d27aa564ea9a75b61f1ee30a, type: 2}
-  - {fileID: 114176897025797748, guid: 54740380d27aa564ea9a75b61f1ee30a, type: 2}
-  - {fileID: 114598384279952058, guid: 54740380d27aa564ea9a75b61f1ee30a, type: 2}
-  - {fileID: 114106128721602104, guid: 54740380d27aa564ea9a75b61f1ee30a, type: 2}
-  - {fileID: 97499050}
-  - {fileID: 33397816}
+  - {fileID: 114835169258161566, guid: 6935afb37a05fe344a30664c373aff65, type: 2}
+  - {fileID: 114551173471658394, guid: 6d1eba1c357f8ac44973dcba1599126e, type: 2}
+  - {fileID: 114731882397651658, guid: 6c07696fc21aa3943842b132cb9bff8b, type: 2}
+  - {fileID: 114011208624570094, guid: f6e852d66a632a949a65c31b4f473339, type: 2}
+  - {fileID: 114847749644182686, guid: 4284b2936e7ee4042908e2403f632864, type: 2}
+  - {fileID: 114623070660092510, guid: 28be5acd73f5f4a4797b044d269a9105, type: 2}
+  - {fileID: 114741224756793888, guid: 8d022aa88e9d0e6459bc725049870e1c, type: 2}
+  - {fileID: 114998889135273088, guid: e7f75ec324937ca43ba9dfecad0c866b, type: 2}
+  - {fileID: 114816828451405036, guid: 0f7e5230f4c36f34db3862d152425caf, type: 2}
+  - {fileID: 114295639585925166, guid: 44a9b6d321da17f48951e287acbf1ce9, type: 2}
   offsetX: 0.77
   offsetY: 0.77
 --- !u!1 &1389599397
