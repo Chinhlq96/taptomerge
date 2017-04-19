@@ -13,8 +13,15 @@ public class BlockController : MonoBehaviour{
 	public int y;
 	[SerializeField]	private Sprite normalForm;
 	[SerializeField] 	private Sprite activeForm;
+	[SerializeField]	private Sprite rightNowForm;
+	private float offset;
 	public bool isActivated;
 	public bool isTapped;
+
+	public bool Merged;
+	public GameObject boxMergeEffect;
+
+
 
 	public static BlockController Instance { get; private set; }
 
@@ -27,22 +34,34 @@ public class BlockController : MonoBehaviour{
 	void Start () {
 
 		isActivated = true;
+		offset = 0.05f;
+		Merged = false;
 	}
 
 	void Update()
 	{
 		ActiveBlock ();
+		MergeEffect ();
 	}
 
 	void ActiveBlock ()
 	{
+		rightNowForm = GetComponent<SpriteRenderer> ().sprite;
 		if (isActivated) 
 		{
 			GetComponent<SpriteRenderer>().sprite = activeForm;
+			if (rightNowForm != GetComponent<SpriteRenderer> ().sprite) 
+			{
+				transform.position = new Vector2 (transform.position.x, transform.position.y + offset);
+			}
 		}
 		else
 		{
 			GetComponent<SpriteRenderer>().sprite = normalForm;
+			if (rightNowForm != GetComponent<SpriteRenderer> ().sprite) 
+			{
+				transform.position = new Vector2 (transform.position.x, transform.position.y - offset);
+			}
 		}
 	}
 
@@ -62,5 +81,14 @@ public class BlockController : MonoBehaviour{
 	{
 		isTapped = true;
 		this.PostEvent (EventID.BlockTap);
+	}
+
+	void MergeEffect ()
+	{
+		if (Merged) 
+		{
+			boxMergeEffect.SetActive (true);
+			Merged = false;
+		}
 	}
 }
