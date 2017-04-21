@@ -88,7 +88,6 @@ public class BlockController : MonoBehaviour{
 		if (Merged) 
 		{
 			boxMergeEffect.SetActive (true);
-			Merged = false;
 		}
 	}
 }
