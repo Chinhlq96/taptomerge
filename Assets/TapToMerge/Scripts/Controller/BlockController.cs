@@ -66,7 +66,7 @@ public class BlockController : MonoBehaviour{
 	}
 
 	public void Move (Vector3[] preBlockPos) {
-		transform.DOPath (preBlockPos, 0.5f).OnComplete(()=>{DestroyBlock();});
+		transform.DOPath (preBlockPos, 0.2f).OnComplete(()=>{DestroyBlock();});
 	}
 
 	public void DestroyBlock () {

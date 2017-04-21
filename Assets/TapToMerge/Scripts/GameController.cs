@@ -59,7 +59,8 @@ public class GameController : SingletonMonoBehaviour<GameController>
 		CountNull ();
 		Fall ();
 		Fill ();
-	
+		if (isGameOver)
+			Debug.Log ("Game Over!");	
 	}
 	void GenerateGrid() {
 		var test = 0;
@@ -286,12 +287,6 @@ public class GameController : SingletonMonoBehaviour<GameController>
 
 	}
 
-	void Update() 
-	{
-		if (isGameOver)
-			Debug.Log ("Game Over!");	
-	}
-
 	//Dem so block null tung cot 
 	void CountNull()
 	{ 
@@ -356,7 +351,7 @@ public class GameController : SingletonMonoBehaviour<GameController>
 
 		}
 	}
-		
+
 	//Tao block lap day khoang trong
 	void Fill()
 	{ 
