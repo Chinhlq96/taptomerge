@@ -59,7 +59,8 @@ public class GameController : SingletonMonoBehaviour<GameController>
 		CountNull ();
 		Fall ();
 		Fill ();
-	
+		if (isGameOver)
+			Debug.Log ("Game Over!");	
 	}
 	void GenerateGrid() {
 		var test = 0;
@@ -104,7 +105,7 @@ public class GameController : SingletonMonoBehaviour<GameController>
 	public void CheckTap (BlockController blockTap) 
 	{
 		//Transform savePos = blockTap.transform;
-
+		CheckGameOver();
 		//Debug.Log (savePos);
 		if (blocksActivated.Find(x=>x==blockTap) == null) {
 			foreach (BlockController block in blocksActivated) {
@@ -132,21 +133,28 @@ public class GameController : SingletonMonoBehaviour<GameController>
 			foreach (BlockController block in blocksActivated) {
 				//Move ve theo path
 				if (block != blockTap) {
-					/*Vector3[] path = new Vector3[25];
-					int k = 0;
-					path [k] = blockTap.transform.position;
-					for (int j = 0; j < path.Length; j++) 
-					{*/
+					var listOfPoint = new List<Vector3>();
+					listOfPoint.Add (blockTap.transform.position);
+					//listOfPoint.Add (new Vector3 (1f, 1f, 1f));
+					Vector3[] path = listOfPoint.ToArray();
+
+					Debug.Log (path[0]);
+					//for (int j = 0; j < path.Length; j++) 
+
 					//block.gameObject.transform.DOMove (blockTap.transform.position,0.2f);
 					//}
 
-					//BlockController.Instance.Move (path);
-					Destroy (block.gameObject);
+					block.Move (path);
+					//Destroy (block.gameObject);
 				}
 			}
 
 			Destroy (blockTap.gameObject);
 			board [newBlock.x, newBlock.y] = newBlock.GetComponent<BlockController> ();
+			if (newBlock.value == 10) 
+			{
+				isGameOver = true;
+			}
 			/*for (int i = 0; i < blocks.Length; i++)
 				if (blocks [i].value == (saveValue + 1)) {
 					Instantiate (blocks [i], savePos.position - new Vector3(0,0.07f,0), savePos.transform.rotation);
@@ -204,6 +212,52 @@ public class GameController : SingletonMonoBehaviour<GameController>
 		return result;
 	}
 
+	List<Vector3> BFSFindPath(BlockController block) 
+	{
+		List<Vector3> result = new List<Vector3> ();
+		Queue<BlockController> queue = new Queue<BlockController> ();
+		BlockController currentBlock;
+
+		queue.Enqueue (block);
+		while (queue.Count > 0) 
+		{
+			currentBlock = queue.Dequeue ();
+			//Kiem tra tim dc 4 huong.
+			if ((currentBlock.x + 1 < gridSize) 
+				&& (board [currentBlock.x + 1, currentBlock.y].value == currentBlock.value) && (!board [currentBlock.x + 1, currentBlock.y].isActivated)) 
+			{
+				board [currentBlock.x + 1, currentBlock.y].isActivated = true;
+				queue.Enqueue (board [currentBlock.x + 1, currentBlock.y]);
+				//result.Add (board [currentBlock.x + 1, currentBlock.y]);
+			}
+			if ((currentBlock.y + 1 < gridSize) 
+				&& (board [currentBlock.x, currentBlock.y + 1].value == currentBlock.value) && (!board [currentBlock.x, currentBlock.y + 1].isActivated))
+			{
+				board [currentBlock.x, currentBlock.y + 1].isActivated = true;
+				queue.Enqueue (board [currentBlock.x, currentBlock.y + 1]);
+				//result.Add (board [currentBlock.x, currentBlock.y + 1]);
+
+			}
+			if ((currentBlock.x - 1 >= 0) 
+				&& (board [currentBlock.x - 1, currentBlock.y].value == currentBlock.value) && (!board [currentBlock.x - 1, currentBlock.y].isActivated)) 
+			{
+				board [currentBlock.x - 1, currentBlock.y].isActivated = true;
+				queue.Enqueue (board [currentBlock.x - 1, currentBlock.y]);
+				//result.Add (board [currentBlock.x - 1, currentBlock.y]);
+
+			}
+			if ((currentBlock.y - 1 >= 0) 
+				&& (board [currentBlock.x, currentBlock.y - 1].value == currentBlock.value) && (!board [currentBlock.x, currentBlock.y - 1].isActivated)) 
+			{
+				board [currentBlock.x, currentBlock.y - 1].isActivated = true;
+				queue.Enqueue (board [currentBlock.x, currentBlock.y - 1]);
+				//result.Add (board [currentBlock.x, currentBlock.y - 1]);
+
+			}
+		}
+		return result;
+	}
+
 	void CheckGameOver() {
 		foreach (BlockController block in board) 
 		{
@@ -226,13 +280,12 @@ public class GameController : SingletonMonoBehaviour<GameController>
 						&& (board [currentBlock.x, currentBlock.y - 1].value == currentBlock.value)) 
 						checkGameOver = false;
 				}
-
-			if (checkGameOver || (block.value == 10))
+			if (checkGameOver)
 				isGameOver = true;
+
 		}
+
 	}
-
-
 
 	//Dem so block null tung cot 
 	void CountNull()
@@ -298,9 +351,6 @@ public class GameController : SingletonMonoBehaviour<GameController>
 
 		}
 	}
-
-
-
 
 	//Tao block lap day khoang trong
 	void Fill()

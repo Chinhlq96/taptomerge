@@ -112,7 +112,7 @@ MonoBehaviour:
   value: 10
   x: 0
   y: 0
-  normalForm: {fileID: 21300000, guid: 7e084431d05b4ec44b7e6f0104e1eda2, type: 3}
+  normalForm: {fileID: 21300040, guid: 385b0ff4706cb3047a13a65cac9d2c22, type: 3}
   activeForm: {fileID: 21300000, guid: 01ea9677df7aeba48bcb8639f6631d02, type: 3}
   rightNowForm: {fileID: 0}
   offset: 0
@@ -164,7 +164,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 7e084431d05b4ec44b7e6f0104e1eda2, type: 3}
+  m_Sprite: {fileID: 21300040, guid: 385b0ff4706cb3047a13a65cac9d2c22, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
