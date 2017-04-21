@@ -56,7 +56,9 @@ public class GameController : SingletonMonoBehaviour<GameController>
 
 	void Update()
 	{	//CheckMaxValue ();
-		
+		CountNull ();
+		Fall ();
+		Fill ();
 	
 	}
 	void GenerateGrid() {
@@ -142,9 +144,7 @@ public class GameController : SingletonMonoBehaviour<GameController>
 					Destroy (block.gameObject);
 				}
 			}
-			CountNull ();
-			Fall ();
-			Fill ();
+
 			Destroy (blockTap.gameObject);
 			board [newBlock.x, newBlock.y] = newBlock.GetComponent<BlockController> ();
 			/*for (int i = 0; i < blocks.Length; i++)
@@ -265,12 +265,18 @@ public class GameController : SingletonMonoBehaviour<GameController>
 			{	
 				//Bat dau tu i=1, kiem tra block duoi no co la null ko, co thi dich xuong.
 				if (board [i, j] != null) 
-				{ 
+				{   int a = 0;
 					int temp = i;
 					while (board [i - 1, j] == null) 
-					{
-						//dich vi tri block xuong 1 
+					{ 
+						
+						a++;
+						//dich vi tri block xuong 1
+						//translate
 						board [i, j].transform.position -= someVector;
+						//test DoMove 1
+						//board [i, j].gameObject.transform.DOMove (board [i, j].transform.position - someVector, 0f).WaitForCompletion();
+
 						//Gan lai gia tri x cua block
 						board [i, j].x -= 1;
 						board [i, j].GetComponent<SpriteRenderer> ().sortingOrder ++;
@@ -282,13 +288,18 @@ public class GameController : SingletonMonoBehaviour<GameController>
 						//ngan ko cho xuong -1
 						if (i == 0)
 							break;
+						
 					}
+					//Test DoMove2
+					//board [i, j].gameObject.transform.DOMove (board [i, j].transform.position - someVector*a, 0.5f).WaitForCompletion();
 					i = temp;
 				}
 			}
 
 		}
 	}
+
+
 
 
 	//Tao block lap day khoang trong
@@ -341,7 +352,10 @@ public class GameController : SingletonMonoBehaviour<GameController>
 				//vi fillPos o vi tri [0,6] nen phai "+ 1"
 				offset = new Vector3 (offsetX*j, -(offsetY*(amountToFill+1)));
 				//Tao Block roi move di
-				var block = Instantiate (blocks [randomValue], fillPos.position + offset, blocks [randomValue].transform.rotation);
+				//var block = Instantiate (blocks [randomValue], fillPos.position + offset, blocks [randomValue].transform.rotation);
+				//Test DoMoveFill
+				var block = Instantiate (blocks [randomValue], fillPos.position, blocks [randomValue].transform.rotation);
+				block.gameObject.transform.DOMove (block.transform.position + offset, 0.5f);
 				//Gan gia tri x,y cho block / Gan block vao board
 				block.x = i;
 				block.y = j;
