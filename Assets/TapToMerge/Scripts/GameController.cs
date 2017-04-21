@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using EventManager;
+using DG.Tweening;
 
 public class GameController : SingletonMonoBehaviour<GameController>
 {
@@ -109,9 +110,20 @@ public class GameController : SingletonMonoBehaviour<GameController>
 
 			foreach (BlockController block in blocksActivated) {
 				//Move ve theo path
-				Destroy (block.gameObject);
-			}
+				if (block != blockTap) {
+					/*Vector3[] path = new Vector3[25];
+					int k = 0;
+					path [k] = blockTap.transform.position;
+					for (int j = 0; j < path.Length; j++) 
+					{*/
+					//block.gameObject.transform.DOMove (blockTap.transform.position,0.2f);
+					//}
 
+					//BlockController.Instance.Move (path);
+					Destroy (block.gameObject);
+				}
+			}
+			Destroy (blockTap.gameObject);
 			board [newBlock.x, newBlock.y] = newBlock.GetComponent<BlockController> ();
 			/*for (int i = 0; i < blocks.Length; i++)
 				if (blocks [i].value == (saveValue + 1)) {

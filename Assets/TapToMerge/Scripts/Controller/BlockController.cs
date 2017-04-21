@@ -65,10 +65,10 @@ public class BlockController : MonoBehaviour{
 		}
 	}
 
-	void Move (Vector3[] preBlockPos) {
+	public void Move (Vector3[] preBlockPos) {
 		for (int i = 0; i < preBlockPos.Length; i++) 
 		{
-			transform.DOMove (preBlockPos[i],0.5f);
+			gameObject.transform.DOMove (preBlockPos[i],0.5f);
 		}
 		DestroyBlock ();
 	}
