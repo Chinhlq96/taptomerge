@@ -127,6 +127,7 @@ MonoBehaviour:
   normalForm: {fileID: 21300000, guid: d5f8abb7e13228c49957f6c97145e055, type: 3}
   activeForm: {fileID: 21300000, guid: ba10ab31e7aef7d44812aba9f751a5e3, type: 3}
   rightNowForm: {fileID: 0}
+  offset: 0
   isActivated: 0
   isTapped: 0
   Merged: 0

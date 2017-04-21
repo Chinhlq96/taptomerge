@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4868257813700860}
   - component: {fileID: 212182827154859964}
   - component: {fileID: 114551173471658394}
+  - component: {fileID: 61477050451670410}
   m_Layer: 0
   m_Name: BlockNumber_2
   m_TagString: Untagged
@@ -66,12 +67,37 @@ Transform:
   m_GameObject: {fileID: 1227415163929342}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -5.7095065, y: 3.6884947, z: 0}
-  m_LocalScale: {x: 0.7142857, y: 0.7142857, z: 1.4285713}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
   m_Children:
   - {fileID: 4827042954729106}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &61477050451670410
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1227415163929342}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.11, y: 1.21}
+    newSize: {x: 0.6, y: 0.6}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1.11, y: 1.21}
+  m_EdgeRadius: 0
 --- !u!114 &114446908839886966
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -95,12 +121,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8a0f14f77ee5b5459505f2fd8b3ddc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  value: 0
+  value: 2
   x: 0
   y: 0
   normalForm: {fileID: 21300000, guid: 778574552504d0d4d940c2273bd773cf, type: 3}
   activeForm: {fileID: 21300000, guid: 1dc0b3d03e686314c93534a4b585b7e8, type: 3}
   rightNowForm: {fileID: 0}
+  offset: 0
   isActivated: 0
   isTapped: 0
   Merged: 0

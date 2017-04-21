@@ -14,7 +14,7 @@ public class BlockController : MonoBehaviour{
 	[SerializeField]	private Sprite normalForm;
 	[SerializeField] 	private Sprite activeForm;
 	[SerializeField]	private Sprite rightNowForm;
-	private float offset;
+	public float offset;
 	public bool isActivated;
 	public bool isTapped;
 
@@ -33,15 +33,15 @@ public class BlockController : MonoBehaviour{
 	// Use this for initialization
 	void Start () {
 
-		isActivated = true;
-		offset = 0.05f;
+		isActivated = false;
+		offset = 0.07f;
 		Merged = false;
 	}
 
 	void Update()
 	{
 		ActiveBlock ();
-		MergeEffect ();
+		//MergeEffect ();
 	}
 
 	void ActiveBlock ()
@@ -80,7 +80,7 @@ public class BlockController : MonoBehaviour{
 	void OnMouseDown() 
 	{
 		isTapped = true;
-		this.PostEvent (EventID.BlockTap);
+		this.PostEvent (EventID.BlockTap, this);
 	}
 
 	void MergeEffect ()
