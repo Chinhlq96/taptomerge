@@ -9,6 +9,7 @@ Library/
 Assets/AssetStoreTools/*
 Built/
 xCode/
+Assets/Plugins/*
 
 
 # ===================================== #

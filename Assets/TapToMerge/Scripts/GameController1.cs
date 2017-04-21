@@ -2,30 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 using EventManager;
-using DG.Tweening;
 
-public class GameController : SingletonMonoBehaviour<GameController>
+public class GameController1 : SingletonMonoBehaviour<GameController>
 {
 	private int gridSize = 5;
 	private int x;
 	private int y;
 	private int[,] grid;
-	//
-
-	private int maxValue = 0;
-	private int[] nullCounter;
-
-	//-------
 	private bool isGameOver;
 	private bool checkGameOver;
 	private BlockController[,] board;
-	private Vector3 someVector = new Vector3(0.0f,0.77f,0.0f);
-	//-------
 	private int[,] listDestroy; 
 
 	public Transform startPos;
-	public Transform fillPos;
-
 
 	[SerializeField]
 	private BlockController[] blocks; 
@@ -33,8 +22,6 @@ public class GameController : SingletonMonoBehaviour<GameController>
 	private float offsetX;
 	[SerializeField]
 	private float offsetY;
-
-
 
 	void OnEnable()
 	{
@@ -48,19 +35,10 @@ public class GameController : SingletonMonoBehaviour<GameController>
 	}
 	void Start () 
 	{
-		
 		GenerateGrid ();
 		InstanceBlocks ();
-
 	}
 
-	void Update()
-	{	//CheckMaxValue ();
-		CountNull ();
-		Fall ();
-		Fill ();
-	
-	}
 	void GenerateGrid() {
 		var test = 0;
 		grid = new int[gridSize, gridSize];
@@ -119,42 +97,14 @@ public class GameController : SingletonMonoBehaviour<GameController>
 			}
 		} else {
 			//int saveValue = blockTap.value;
-			int i;
-			for (i = 0; i < blocks.Length; i++)
-				if (blocks [i].value == (blockTap.value + 1)) {
-					break;
-				}
-			var newBlock = Instantiate (blocks [i], blockTap.transform.position - new Vector3 (0f, blockTap.offset, 0f), blockTap.transform.rotation);
-			newBlock.x = blockTap.x;
-			newBlock.y = blockTap.y;
-			newBlock.gameObject.GetComponent<Renderer> ().sortingOrder = blockTap.gameObject.GetComponent<Renderer> ().sortingOrder;
-
 			foreach (BlockController block in blocksActivated) {
-				//Move ve theo path
-				if (block != blockTap) {
-					/*Vector3[] path = new Vector3[25];
-					int k = 0;
-					path [k] = blockTap.transform.position;
-					for (int j = 0; j < path.Length; j++) 
-					{*/
-					//block.gameObject.transform.DOMove (blockTap.transform.position,0.2f);
-					//}
-
-					//BlockController.Instance.Move (path);
-					Destroy (block.gameObject);
-				}
+				Destroy (block.gameObject);
 			}
-
-			Destroy (blockTap.gameObject);
-			board [newBlock.x, newBlock.y] = newBlock.GetComponent<BlockController> ();
 			/*for (int i = 0; i < blocks.Length; i++)
 				if (blocks [i].value == (saveValue + 1)) {
 					Instantiate (blocks [i], savePos.position - new Vector3(0,0.07f,0), savePos.transform.rotation);
 				}*/
-			
 		}
-
-
 	}
 	List<BlockController> blocksActivated = new List<BlockController> ();
 
@@ -231,139 +181,4 @@ public class GameController : SingletonMonoBehaviour<GameController>
 				isGameOver = true;
 		}
 	}
-
-
-
-	//Dem so block null tung cot 
-	void CountNull()
-	{ 
-		nullCounter = new int[gridSize];
-		for (int i = 0; i < gridSize; i++) 
-		{
-			nullCounter [i] = 0;
-		}
-		for (int j = 0; j < gridSize; j++) 
-		{ 
-			for (int i = 0; i < gridSize; i++) 
-			{	
-				if (board [i, j] == null)
-					
-					nullCounter[j]++;
-			}
-		}
-
-	}
-
-	//Cac Block con lai roi xuong
-	void Fall()
-	{
-
-
-		for (int j = 0; j < gridSize; j++) 
-		{ 
-			for (int i = 1; i < gridSize; i++) 
-			{	
-				//Bat dau tu i=1, kiem tra block duoi no co la null ko, co thi dich xuong.
-				if (board [i, j] != null) 
-				{   int a = 0;
-					int temp = i;
-					while (board [i - 1, j] == null) 
-					{ 
-						
-						a++;
-						//dich vi tri block xuong 1
-						//translate
-						board [i, j].transform.position -= someVector;
-						//test DoMove 1
-						//board [i, j].gameObject.transform.DOMove (board [i, j].transform.position - someVector, 0f).WaitForCompletion();
-
-						//Gan lai gia tri x cua block
-						board [i, j].x -= 1;
-						board [i, j].GetComponent<SpriteRenderer> ().sortingOrder ++;
-						//Dao vi tri tuong ung trong board
-						board [i - 1, j] = board [i, j];
-						board [i, j] = null;
-						//tiep tuc dich xuong
-						i--;
-						//ngan ko cho xuong -1
-						if (i == 0)
-							break;
-						
-					}
-					//Test DoMove2
-					//board [i, j].gameObject.transform.DOMove (board [i, j].transform.position - someVector*a, 0.5f).WaitForCompletion();
-					i = temp;
-				}
-			}
-
-		}
-	}
-
-
-
-
-	//Tao block lap day khoang trong
-	void Fill()
-	{ 
-		Vector3 offset;
-		int randomValue = 0;
-
-		for (int j = 0; j < gridSize; j++) 
-		{
-			//nullCounter[j] la so block null cua cot j trong board[i,j]
-			for (int amountToFill = nullCounter [j]; amountToFill > 0; amountToFill--) 
-			{	
-				//Check block co value max
-				foreach (BlockController blockCheck in board) 
-				{	
-					if(blockCheck!=null)
-					if (blockCheck.value >= maxValue)
-						maxValue = blockCheck.value;
-				}
-
-				//Cac truong hop tuong ung
-				switch (maxValue) 
-				{
-				case 4:
-					randomValue = (int)Random.Range (0f, 3f);
-					break;
-				case 5:
-				case 6:
-					randomValue = (int)Random.Range (0f, 4f);
-					break;
-				case 7:
-					randomValue = (int)Random.Range (0f, 5f);
-					break;
-				case 8:
-					randomValue = (int)Random.Range (0f, 5f);
-					break;
-				case 9:
-					randomValue = (int)Random.Range (0f, 6f);
-					break;
-				default:
-					randomValue = (int)Random.Range (0f, 7f);
-					break;
-
-
-				}
-
-				// Vi du j = 0 , co 1 block null (amountToFill = nullCounter = 1)  , i = gridSize - amountToFill = 5-1 =4 => board[i,j] 0,4 la cho can fill
-				int i = gridSize - amountToFill;
-				//vi fillPos o vi tri [0,6] nen phai "+ 1"
-				offset = new Vector3 (offsetX*j, -(offsetY*(amountToFill+1)));
-				//Tao Block roi move di
-				//var block = Instantiate (blocks [randomValue], fillPos.position + offset, blocks [randomValue].transform.rotation);
-				//Test DoMoveFill
-				var block = Instantiate (blocks [randomValue], fillPos.position, blocks [randomValue].transform.rotation);
-				block.gameObject.transform.DOMove (block.transform.position + offset, 0.5f);
-				//Gan gia tri x,y cho block / Gan block vao board
-				block.x = i;
-				block.y = j;
-				board [i, j] = block.GetComponent<BlockController> ();
-				board [i, j].GetComponent<SpriteRenderer> ().sortingOrder = -(i);
-			}
-
-		}
-	}
-
 }
