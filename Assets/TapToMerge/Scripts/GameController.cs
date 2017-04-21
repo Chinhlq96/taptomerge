@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using EventManager;
+using DG.Tweening;
 
 public class GameController : SingletonMonoBehaviour<GameController>
 {
@@ -116,15 +117,36 @@ public class GameController : SingletonMonoBehaviour<GameController>
 			}
 		} else {
 			//int saveValue = blockTap.value;
-			foreach (BlockController block in blocksActivated) {
-				Destroy (block.gameObject);
-			}
+			int i;
+			for (i = 0; i < blocks.Length; i++)
+				if (blocks [i].value == (blockTap.value + 1)) {
+					break;
+				}
+			var newBlock = Instantiate (blocks [i], blockTap.transform.position - new Vector3 (0f, blockTap.offset, 0f), blockTap.transform.rotation);
+			newBlock.x = blockTap.x;
+			newBlock.y = blockTap.y;
+			newBlock.gameObject.GetComponent<Renderer> ().sortingOrder = blockTap.gameObject.GetComponent<Renderer> ().sortingOrder;
 
+			foreach (BlockController block in blocksActivated) {
+				//Move ve theo path
+				if (block != blockTap) {
+					/*Vector3[] path = new Vector3[25];
+					int k = 0;
+					path [k] = blockTap.transform.position;
+					for (int j = 0; j < path.Length; j++) 
+					{*/
+					//block.gameObject.transform.DOMove (blockTap.transform.position,0.2f);
+					//}
+
+					//BlockController.Instance.Move (path);
+					Destroy (block.gameObject);
+				}
+			}
 			CountNull ();
 			Fall ();
 			Fill ();
-
-
+			Destroy (blockTap.gameObject);
+			board [newBlock.x, newBlock.y] = newBlock.GetComponent<BlockController> ();
 			/*for (int i = 0; i < blocks.Length; i++)
 				if (blocks [i].value == (saveValue + 1)) {
 					Instantiate (blocks [i], savePos.position - new Vector3(0,0.07f,0), savePos.transform.rotation);

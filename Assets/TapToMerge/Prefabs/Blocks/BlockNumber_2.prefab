@@ -90,7 +90,7 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 1.11, y: 1.21}
-    newSize: {x: 1.21, y: 1.11}
+    newSize: {x: 0.6, y: 0.6}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -127,6 +127,7 @@ MonoBehaviour:
   normalForm: {fileID: 21300000, guid: 778574552504d0d4d940c2273bd773cf, type: 3}
   activeForm: {fileID: 21300000, guid: 1dc0b3d03e686314c93534a4b585b7e8, type: 3}
   rightNowForm: {fileID: 0}
+  offset: 0
   isActivated: 0
   isTapped: 0
   Merged: 0
