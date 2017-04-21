@@ -44,7 +44,7 @@ public class BlockController : MonoBehaviour{
 		//MergeEffect ();
 	}
 
-	void ActiveBlock ()
+	public void ActiveBlock ()
 	{
 		rightNowForm = GetComponent<SpriteRenderer> ().sprite;
 		if (isActivated) 
@@ -65,25 +65,21 @@ public class BlockController : MonoBehaviour{
 		}
 	}
 
-	void Move (Vector3[] preBlockPos) {
-		for (int i = 0; i < preBlockPos.Length; i++) 
-		{
-			transform.DOMove (preBlockPos[i],0.5f);
-		}
-		DestroyBlock ();
+	public void Move (Vector3[] preBlockPos) {
+		transform.DOPath (preBlockPos, 1f).OnComplete(()=>{/*DestroyBlock();*/});
 	}
 
-	void DestroyBlock () {
+	public void DestroyBlock () {
 		Destroy (gameObject);
 	}
 
-	void OnMouseDown() 
+	public void OnMouseDown() 
 	{
 		isTapped = true;
 		this.PostEvent (EventID.BlockTap, this);
 	}
 
-	void MergeEffect ()
+	public void MergeEffect ()
 	{
 		if (Merged) 
 		{
