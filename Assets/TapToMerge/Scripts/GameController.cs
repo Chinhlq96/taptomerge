@@ -257,7 +257,7 @@ public class GameController : SingletonMonoBehaviour<GameController>
 	//Cac Block con lai roi xuong
 	void Fall()
 	{
-
+		
 
 		for (int j = 0; j < gridSize; j++) 
 		{ 
@@ -306,6 +306,9 @@ public class GameController : SingletonMonoBehaviour<GameController>
 	void Fill()
 	{ 
 		Vector3 offset;
+		Vector3 offsetNgang;
+		Vector3 offsetDoc;
+
 		int randomValue = 0;
 
 		for (int j = 0; j < gridSize; j++) 
@@ -350,12 +353,18 @@ public class GameController : SingletonMonoBehaviour<GameController>
 				// Vi du j = 0 , co 1 block null (amountToFill = nullCounter = 1)  , i = gridSize - amountToFill = 5-1 =4 => board[i,j] 0,4 la cho can fill
 				int i = gridSize - amountToFill;
 				//vi fillPos o vi tri [0,6] nen phai "+ 1"
-				offset = new Vector3 (offsetX*j, -(offsetY*(amountToFill+1)));
+				//offset = new Vector3 (offsetX*j, -(offsetY*(amountToFill+1)));
+				offsetNgang = new Vector3 (offsetX*j,0);
+				offsetDoc = new Vector3 (0, -(offsetY*(amountToFill+1))); 
 				//Tao Block roi move di
 				//var block = Instantiate (blocks [randomValue], fillPos.position + offset, blocks [randomValue].transform.rotation);
 				//Test DoMoveFill
-				var block = Instantiate (blocks [randomValue], fillPos.position, blocks [randomValue].transform.rotation);
-				block.gameObject.transform.DOMove (block.transform.position + offset, 0.5f);
+				var block = Instantiate (blocks [randomValue], fillPos.position+offsetNgang, blocks [randomValue].transform.rotation);
+				block.gameObject.transform.DOMove (block.transform.position + offsetDoc, 0.5f);
+		//block.gameObject.transform.Translate(offsetDoc,);
+				//Vector2.MoveTowards((Vector2)block.gameObject.transform.position,(Vector2)(block.gameObject.transform.position + offsetDoc),2f);
+		//block.gameObject.transform.position = Vector3.MoveTowards(block.transform.position,block.transform.position+offsetDoc,Time.deltaTime*1f);
+
 				//Gan gia tri x,y cho block / Gan block vao board
 				block.x = i;
 				block.y = j;
