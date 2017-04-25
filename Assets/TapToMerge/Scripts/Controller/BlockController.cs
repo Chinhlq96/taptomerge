@@ -7,14 +7,13 @@ using EventManager;
 public class BlockController : MonoBehaviour{
 
 	//[SerializeField] 	private int ID;
-	private static BlockController _instance;
 	public int value;
 	public int x;
 	public int y;
 	[SerializeField]	private Sprite normalForm;
 	[SerializeField] 	private Sprite activeForm;
 	[SerializeField]	private Sprite rightNowForm;
-	public float offset;
+	private float offset;
 	public bool isActivated;
 	public bool isTapped;
 
@@ -22,26 +21,18 @@ public class BlockController : MonoBehaviour{
 	public GameObject boxMergeEffect;
 
 
-
-	public static BlockController Instance { get; private set; }
-
-	void Awake()
-	{
-		Instance = this;
-	}
-
 	// Use this for initialization
 	void Start () {
 
 		isActivated = false;
-		offset = 0.07f;
+		offset = GameController.Instance.offset;
 		Merged = false;
 	}
 
 	void Update()
 	{
 		ActiveBlock ();
-		//MergeEffect ();
+		MergeEffect ();
 	}
 
 	public void ActiveBlock ()
@@ -75,6 +66,8 @@ public class BlockController : MonoBehaviour{
 
 	public void OnMouseDown() 
 	{
+		if (GameController.Instance.isMerging)
+			return;
 		isTapped = true;
 		this.PostEvent (EventID.BlockTap, this);
 	}
