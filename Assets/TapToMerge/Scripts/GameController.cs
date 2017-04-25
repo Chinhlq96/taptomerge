@@ -7,34 +7,37 @@ using DG.Tweening;
 public class GameController : SingletonMonoBehaviour<GameController>
 {
 	private int gridSize = 5;
-	private int x;
-	private int y;
+	//private int x;
+	//private int y;
 	private int[,] grid;
+	private int score;
 	//
 
 	private int maxValue = 0;
 	private int[] nullCounter;
 
+	public bool isMerging;
+	public float offset = 0.07f;
+
 	//-------
+	// Kiem tra game over = 10 hoac het block ket noi
 	private bool isGameOver;
+	// Kiem tra game over het block ket noi
 	private bool checkGameOver;
 	private BlockController[,] board;
-	private Vector3 someVector = new Vector3(0.0f,0.77f,0.0f);
+	private Vector3 someVector = new Vector3(0.0f,0.777f,0.0f);
 	//-------
-	private int[,] listDestroy; 
 
-	public Transform startPos;
-	public Transform fillPos;
-
-
+	[SerializeField]
+	private Transform startPos;
+	[SerializeField]
+	private Transform fillPos;
 	[SerializeField]
 	private BlockController[] blocks; 
 	[SerializeField]
 	private float offsetX;
 	[SerializeField]
 	private float offsetY;
-
-
 
 	void OnEnable()
 	{
@@ -48,7 +51,8 @@ public class GameController : SingletonMonoBehaviour<GameController>
 	}
 	void Start () 
 	{
-		
+		isMerging = false;
+		score = 0;
 		GenerateGrid ();
 		InstanceBlocks ();
 
@@ -60,7 +64,7 @@ public class GameController : SingletonMonoBehaviour<GameController>
 		//CountNull ();
 		//Fall ();
 		//Fill ();
-	//	Move();
+
 
 		if (isGameOver)
 			Debug.Log ("Game Over!");	
@@ -68,11 +72,10 @@ public class GameController : SingletonMonoBehaviour<GameController>
 	void GenerateGrid() {
 		var test = 0;
 		grid = new int[gridSize, gridSize];
-		listDestroy = new int[gridSize, gridSize];
 		board = new BlockController[gridSize,gridSize];
 		//Gen blocks value
-		for (x = 0; x < gridSize; x++)
-			for (y = 0; y < gridSize; y++) 
+		for (int x = 0; x < gridSize; x++)
+			for (int y = 0; y < gridSize; y++) 
 			{
 				if (test < 10)
 					test++;
@@ -84,9 +87,9 @@ public class GameController : SingletonMonoBehaviour<GameController>
 
 	void InstanceBlocks() {
 
-		for (x = 0; x < gridSize; x++)
+		for (int x = 0; x < gridSize; x++)
 		{
-			for (y = 0; y < gridSize; y++) 
+			for (int y = 0; y < gridSize; y++) 
 				for (int i = 0; i<blocks.Length; i++) 
 					if (blocks[i].value == grid [x, y]) 
 					{
@@ -94,17 +97,22 @@ public class GameController : SingletonMonoBehaviour<GameController>
 						var block = Instantiate (blocks [i], pos, blocks [i].transform.rotation);
 						block.x = x;
 						block.y = y;
+
 						board [x, y] = block.GetComponent<BlockController> ();
-						block.Drop (x,y,true);
+						board[x,y].Drop (x,y,true);
+						board [x, y].gameObject.name = x +""+ y;
+						board [x, y].gameObject.GetComponent<Renderer> ().sortingOrder = -y;
+
 					}
 
-			for (int i = 0; i<blocks.Length; i++) 
-				blocks [i].gameObject.GetComponent<Renderer> ().sortingOrder--;
+//			for (int i = 0; i<blocks.Length; i++) 
+//				blocks [i].gameObject.GetComponent<Renderer> ().sortingOrder++;		
 		}
 		//Set lai order
-		for (int i = 0; i<blocks.Length; i++) 
-			blocks [i].gameObject.GetComponent<Renderer> ().sortingOrder = 0;
+//		for (int i = 0; i<blocks.Length; i++) 
+//			blocks [i].gameObject.GetComponent<Renderer> ().sortingOrder = 0;
 	}
+
 
 	public Vector3 ConvertBoardToPosition(int x,int y)
 	{
@@ -112,11 +120,9 @@ public class GameController : SingletonMonoBehaviour<GameController>
 		return startPos.position + offset;
 	}
 
+
 	public void CheckTap (BlockController blockTap) 
 	{
-		//Transform savePos = blockTap.transform;
-		CheckGameOver();
-		//Debug.Log (savePos);
 		if (blocksActivated.Find(x=>x==blockTap) == null) {
 			foreach (BlockController block in blocksActivated) {
 				block.isActivated = false;
@@ -129,50 +135,56 @@ public class GameController : SingletonMonoBehaviour<GameController>
 				blocksActivated.Add (blockTap);
 			}
 		} else {
-			//int saveValue = blockTap.value;
-			int i;
+			isMerging = true;
+			int i, count = 0;
 			for (i = 0; i < blocks.Length; i++)
 				if (blocks [i].value == (blockTap.value + 1)) {
 					break;
 				}
-			var newBlock = Instantiate (blocks [i], blockTap.transform.position - new Vector3 (0f, blockTap.offset, 0f), blockTap.transform.rotation);
+			var newBlock = Instantiate (blocks [i], blockTap.transform.position, blockTap.transform.rotation);
 			newBlock.x = blockTap.x;
 			newBlock.y = blockTap.y;
 			newBlock.gameObject.GetComponent<Renderer> ().sortingOrder = blockTap.gameObject.GetComponent<Renderer> ().sortingOrder;
-
+			newBlock.gameObject.SetActive (false);
 			foreach (BlockController block in blocksActivated) {
 				//Move ve theo path
+				count++;
 				if (block != blockTap) {
 					var listOfPoint = new List<Vector3>();
-					listOfPoint.Add (blockTap.transform.position);
-					//listOfPoint.Add (new Vector3 (1f, 1f, 1f));
-					Vector3[] path = listOfPoint.ToArray();
 
-
-					//for (int j = 0; j < path.Length; j++) 
-
-					//block.gameObject.transform.DOMove (blockTap.transform.position,0.2f);
-					//}
-
+					Vector3[] path = BFSFindPath (block, blockTap).ToArray ();
+					block.gameObject.GetComponent<Renderer> ().sortingOrder -= 10;
 					block.Move (path);
-					//Destroy (block.gameObject);
 				}
 			}
+			count--;
 
-			Destroy (blockTap.gameObject);
-			board [newBlock.x, newBlock.y] = newBlock.GetComponent<BlockController> ();
-			if (newBlock.value == 10) 
-			{
-				isGameOver = true;
-			}
-			/*for (int i = 0; i < blocks.Length; i++)
-				if (blocks [i].value == (saveValue + 1)) {
-					Instantiate (blocks [i], savePos.position - new Vector3(0,0.07f,0), savePos.transform.rotation);
-				}*/
+			int pointPerBlock = blockTap.value + 2;
+			if (blockTap.value < 3)
+				score += pointPerBlock * (blockTap.value * 2 + count - 2);
+			else
+				score += pointPerBlock * (blockTap.value * 2 + count - 2) - (blockTap.value - 2);
 			
+			StartCoroutine(WaitMerge(0.2f,blockTap,newBlock));
+
 		}
 
-
+	}
+	IEnumerator WaitMerge(float duration,BlockController blockTap,BlockController newBlock)
+	{
+		yield return new WaitForSeconds(duration);   //Wait
+		newBlock.gameObject.SetActive (true);
+		newBlock.transform.position -= new Vector3 (0f, offset, 0f);
+		Destroy (blockTap.gameObject);
+		board [newBlock.x, newBlock.y] = newBlock.GetComponent<BlockController> ();
+		CheckGameOver();
+		if (newBlock.value == 10) 
+		{
+			isGameOver = true;
+		}
+		isMerging = false;
+//		Debug.Log (score);
+		Move();
 	}
 	List<BlockController> blocksActivated = new List<BlockController> ();
 
@@ -200,7 +212,6 @@ public class GameController : SingletonMonoBehaviour<GameController>
 				board [currentBlock.x, currentBlock.y + 1].isActivated = true;
 				queue.Enqueue (board [currentBlock.x, currentBlock.y + 1]);
 				result.Add (board [currentBlock.x, currentBlock.y + 1]);
-
 			}
 			if ((currentBlock.x - 1 >= 0) 
 				&& (board [currentBlock.x - 1, currentBlock.y].value == currentBlock.value) && (!board [currentBlock.x - 1, currentBlock.y].isActivated)) 
@@ -208,7 +219,6 @@ public class GameController : SingletonMonoBehaviour<GameController>
 				board [currentBlock.x - 1, currentBlock.y].isActivated = true;
 				queue.Enqueue (board [currentBlock.x - 1, currentBlock.y]);
 				result.Add (board [currentBlock.x - 1, currentBlock.y]);
-
 			}
 			if ((currentBlock.y - 1 >= 0) 
 				&& (board [currentBlock.x, currentBlock.y - 1].value == currentBlock.value) && (!board [currentBlock.x, currentBlock.y - 1].isActivated)) 
@@ -216,55 +226,65 @@ public class GameController : SingletonMonoBehaviour<GameController>
 				board [currentBlock.x, currentBlock.y - 1].isActivated = true;
 				queue.Enqueue (board [currentBlock.x, currentBlock.y - 1]);
 				result.Add (board [currentBlock.x, currentBlock.y - 1]);
-
 			}
 		}
 		return result;
 	}
-
-	List<Vector3> BFSFindPath(BlockController block) 
+	//Tim duong di ngan nhat
+	List<Vector3> BFSFindPath (BlockController block, BlockController targetBlock)
 	{
 		List<Vector3> result = new List<Vector3> ();
 		Queue<BlockController> queue = new Queue<BlockController> ();
 		BlockController currentBlock;
+		BlockController[,] parentBlock = new BlockController[gridSize, gridSize];
 
-		queue.Enqueue (block);
-		while (queue.Count > 0) 
-		{
-			currentBlock = queue.Dequeue ();
-			//Kiem tra tim dc 4 huong.
-			if ((currentBlock.x + 1 < gridSize) 
-				&& (board [currentBlock.x + 1, currentBlock.y].value == currentBlock.value) && (!board [currentBlock.x + 1, currentBlock.y].isActivated)) 
-			{
-				board [currentBlock.x + 1, currentBlock.y].isActivated = true;
-				queue.Enqueue (board [currentBlock.x + 1, currentBlock.y]);
-				//result.Add (board [currentBlock.x + 1, currentBlock.y]);
-			}
-			if ((currentBlock.y + 1 < gridSize) 
-				&& (board [currentBlock.x, currentBlock.y + 1].value == currentBlock.value) && (!board [currentBlock.x, currentBlock.y + 1].isActivated))
-			{
-				board [currentBlock.x, currentBlock.y + 1].isActivated = true;
-				queue.Enqueue (board [currentBlock.x, currentBlock.y + 1]);
-				//result.Add (board [currentBlock.x, currentBlock.y + 1]);
-
-			}
-			if ((currentBlock.x - 1 >= 0) 
-				&& (board [currentBlock.x - 1, currentBlock.y].value == currentBlock.value) && (!board [currentBlock.x - 1, currentBlock.y].isActivated)) 
-			{
-				board [currentBlock.x - 1, currentBlock.y].isActivated = true;
-				queue.Enqueue (board [currentBlock.x - 1, currentBlock.y]);
-				//result.Add (board [currentBlock.x - 1, currentBlock.y]);
-
-			}
-			if ((currentBlock.y - 1 >= 0) 
-				&& (board [currentBlock.x, currentBlock.y - 1].value == currentBlock.value) && (!board [currentBlock.x, currentBlock.y - 1].isActivated)) 
-			{
-				board [currentBlock.x, currentBlock.y - 1].isActivated = true;
-				queue.Enqueue (board [currentBlock.x, currentBlock.y - 1]);
-				//result.Add (board [currentBlock.x, currentBlock.y - 1]);
-
+		int[,] visit = new int[gridSize, gridSize];
+		//Khoi tao mang visit dnah dau da tham va hoan thanh tham
+		for (int i = 0; i < gridSize; i++) {
+			for (int j = 0; j < gridSize; j++) {
+				visit [i, j] = 0; // = 0 la chua tham
 			}
 		}
+
+		queue.Enqueue (block);
+		while (queue.Count > 0) {
+			currentBlock = queue.Dequeue ();
+			visit [currentBlock.x, currentBlock.y] = 1; // = 1 la da tham
+			// Neu bang target thi Add vi tri va thoat
+			if ((currentBlock.x == targetBlock.x) && (currentBlock.y == targetBlock.y)) {
+				break;
+			}
+
+			//Kiem tra tim 4 huong.
+			if ((currentBlock.x + 1 < gridSize) && (board [currentBlock.x + 1, currentBlock.y].isActivated)
+			    && (visit [currentBlock.x + 1, currentBlock.y] == 0)) {
+				queue.Enqueue (board [currentBlock.x + 1, currentBlock.y]);
+				parentBlock [currentBlock.x + 1, currentBlock.y] = currentBlock;
+			}
+			if ((currentBlock.y + 1 < gridSize) && (board [currentBlock.x, currentBlock.y + 1].isActivated)
+			    && (visit [currentBlock.x, currentBlock.y + 1] == 0)) {
+				queue.Enqueue (board [currentBlock.x, currentBlock.y + 1]);
+				parentBlock [currentBlock.x, currentBlock.y + 1] = currentBlock;
+			}
+			if ((currentBlock.x - 1 >= 0) && (board [currentBlock.x - 1, currentBlock.y].isActivated)
+			    && (visit [currentBlock.x - 1, currentBlock.y] == 0)) {
+				queue.Enqueue (board [currentBlock.x - 1, currentBlock.y]);
+				parentBlock [currentBlock.x - 1, currentBlock.y] = currentBlock;
+			}
+			if ((currentBlock.y - 1 >= 0) && (board [currentBlock.x, currentBlock.y - 1].isActivated)
+			    && (visit [currentBlock.x, currentBlock.y - 1] == 0)) {
+				queue.Enqueue (board [currentBlock.x, currentBlock.y - 1]);
+				parentBlock [currentBlock.x, currentBlock.y - 1] = currentBlock;
+			}
+		}
+
+		currentBlock = parentBlock [targetBlock.x, targetBlock.y];
+		result.Add (targetBlock.transform.position);
+		while ((currentBlock.x != block.x) || (currentBlock.y != block.y)) {
+			result.Add (currentBlock.transform.position);
+			currentBlock = parentBlock [currentBlock.x, currentBlock.y];
+		}
+		result.Reverse ();
 		return result;
 	}
 
@@ -272,8 +292,8 @@ public class GameController : SingletonMonoBehaviour<GameController>
 		foreach (BlockController block in board) 
 		{
 			checkGameOver = true;
-			for (x = 0; x < gridSize; x += 2)
-				for (y = 0; y < gridSize; y += 2) 
+			for (int x = 0; x < gridSize; x += 2)
+				for (int y = 0; y < gridSize; y += 2) 
 				{
 					var currentBlock = board [x, y];
 					//Kiem tra 4 huong.
@@ -318,43 +338,43 @@ public class GameController : SingletonMonoBehaviour<GameController>
 	}*/
 
 	//Cac Block con lai roi xuong
-	void Fall()
-	{
-		
-
-		for (int j = 0; j < gridSize; j++) 
-		{ 
-			for (int i = 1; i < gridSize; i++) 
-			{	
-				//Bat dau tu i=1, kiem tra block duoi no co la null ko, co thi dich xuong.
-				if (board [i, j] != null) 
-				{   int a = 0;
-					int temp = i;
-					while (board [i - 1, j] == null) 
-					{ 
-						
-
-						//Gan lai gia tri x cua block
-						board [i, j].x -= 1;
-						board [i, j].GetComponent<SpriteRenderer> ().sortingOrder ++;
-						//Dao vi tri tuong ung trong board
-						board [i - 1, j] = board [i, j];
-						board [i, j] = null;
-						//tiep tuc dich xuong
-						i--;
-						//ngan ko cho xuong -1
-						if (i == 0)
-							break;
-						
-					}
-					//Test DoMove2
-					//board [i, j].gameObject.transform.DOMove (board [i, j].transform.position - someVector*a, 0.5f).WaitForCompletion();
-					i = temp;
-				}
-			}
-
-		}
-	}
+//	void Fall()
+//	{
+//		
+//
+//		for (int j = 0; j < gridSize; j++) 
+//		{ 
+//			for (int i = 1; i < gridSize; i++) 
+//			{	
+//				//Bat dau tu i=1, kiem tra block duoi no co la null ko, co thi dich xuong.
+//				if (board [i, j] != null) 
+//				{   int a = 0;
+//					int temp = i;
+//					while (board [i - 1, j] == null) 
+//					{ 
+//						
+//
+//						//Gan lai gia tri x cua block
+//						board [i, j].x -= 1;
+//						board [i, j].GetComponent<SpriteRenderer> ().sortingOrder ++;
+//						//Dao vi tri tuong ung trong board
+//						board [i - 1, j] = board [i, j];
+//						board [i, j] = null;
+//						//tiep tuc dich xuong
+//						i--;
+//						//ngan ko cho xuong -1
+//						if (i == 0)
+//							break;
+//						
+//					}
+//					//Test DoMove2
+//					//board [i, j].gameObject.transform.DOMove (board [i, j].transform.position - someVector*a, 0.5f).WaitForCompletion();
+//					i = temp;
+//				}
+//			}
+//
+//		}
+//	}
 
 	//Tao block lap day khoang trong
 	/*void Fill()
@@ -431,51 +451,82 @@ public class GameController : SingletonMonoBehaviour<GameController>
 
 
 
-	IEnumerator MoveTo(Vector3 current,Vector3 target)
-	{
-		current = Vector3.MoveTowards (current, target, 1 * Time.deltaTime);
-		yield return null;
-	}
+//	IEnumerator MoveTo(Vector3 current,Vector3 target)
+//	{
+//		current = Vector3.MoveTowards (current, target, 1 * Time.deltaTime);
+//		yield return null;
+//	}
 
 	void Move()
 	{
-		Vector3 offset;
-		Vector3 offsetNgang;
-		Vector3 offsetDoc;
-		int randomValue = 0;
-
-
-
-
-
-		nullCounter = new int[gridSize];
-		for (int j = 0; j < gridSize; j++) 
+		int countNull = 0;
+		for (int i = 0; i < gridSize; i++) 
 		{
-			nullCounter [j] = 0;
-		}
-
-		for (int j = 0; j < gridSize; j++) { 
-			
-			for (int i = 0; i < gridSize; i++)
-			{	
-				if (board [i, j] == null)
-					nullCounter [j]++;
-				if (board [i, j] != null) 
-				{	
-					//Vector3 current = board [i, j].gameObject.transform.position;
-					//Vector3 target = board [i, j].gameObject.transform.position - (someVector * nullCounter [j]);
-					//MoveTo (current, target);
-					board [i, j].gameObject.transform.position -= (someVector * nullCounter [j]);
-
-					Debug.Log (board [4, 1].transform.position);
-					Debug.Log(board [4, 1].transform.position- (someVector * nullCounter [j]));
-					Debug.Log (nullCounter [1]);
-
+			for (int j = 0; j < gridSize; j++) {
+				
+				if (board [i, j] == null) {
+					countNull++;
+				} else {
+					board [i, j].Drop (i, j - countNull);
+					board [i, j - countNull] = board [i, j];
+					board [i, j - countNull].gameObject.name = i +""+ (j - countNull);
+					board [i, j - countNull].gameObject.GetComponent<Renderer> ().sortingOrder = -(j - countNull);
+					board [i, j] = null;
 				}
-
-					
 			}
+
+			for (int k = 0; k < countNull; k++) {
+				var pos = ConvertBoardToPosition (i, gridSize+k);
+				var block = Instantiate (blocks [i], pos, blocks [i].transform.rotation);
+				var newY = gridSize - countNull + k;
+				block.x = i;
+				block.y = newY;
+
+				board [i,  newY] = block.GetComponent<BlockController> ();
+				board[i,newY].Drop (i,newY);
+				board [i, newY].gameObject.name = i +""+ (newY);
+				board [i,newY].gameObject.GetComponent<Renderer> ().sortingOrder = -(newY);
+			}
+
+			Debug.Log ("CHECK NULL "+i + " -  " + countNull);
+			countNull = 0;
 		}
+
+
+
+
+//		Vector3 offset;
+//		Vector3 offsetNgang;
+//		Vector3 offsetDoc;
+//		int randomValue = 0;
+//
+//		nullCounter = new int[gridSize];
+//		for (int j = 0; j < gridSize; j++) 
+//		{
+//			nullCounter [j] = 0;
+//		}
+//
+//		for (int j = 0; j < gridSize; j++) { 
+//			
+//			for (int i = 0; i < gridSize; i++)
+//			{	
+//				if (board [i, j] == null)
+//					nullCounter [j]++;
+//				if (board [i, j] != null) 
+//				{	
+//					//Vector3 current = board [i, j].gameObject.transform.position;
+//					//Vector3 target = board [i, j].gameObject.transform.position - (someVector * nullCounter [j]);
+//					//MoveTo (current, target);
+//					//board [i, j].gameObject.transform.position -= (someVector * nullCounter [j]);
+//					board [i, j].Drop (j , i-nullCounter[j], false);
+//
+//
+//				}
+//
+//					
+//			}
+//		}
+	//	Debug.Log (nullCounter [1]);
 
 		//Fall ();
 

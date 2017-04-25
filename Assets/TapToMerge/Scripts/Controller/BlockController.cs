@@ -64,6 +64,15 @@ public class BlockController : MonoBehaviour{
 			}
 		}
 	}
+	float speed=1f;
+	public void Drop(int x,int y,bool delay = false)
+	{
+		var newPos = GameController.Instance.ConvertBoardToPosition (x, y);
+		float distance = Vector3.Distance (transform.position, newPos);
+		float timeDelay = delay ? (x+y*5)*0.05f:0f;
+		transform.DOMoveY (newPos.y, distance / 25f).SetDelay(timeDelay);
+
+	}
 
 	public void Move (Vector3[] preBlockPos) {
 		transform.DOPath (preBlockPos, 0.2f).OnComplete(()=>{DestroyBlock();});
@@ -76,6 +85,9 @@ public class BlockController : MonoBehaviour{
 	public void OnMouseDown() 
 	{
 		isTapped = true;
+		if (this==null) {
+			Debug.Log ("null");
+		}
 		this.PostEvent (EventID.BlockTap, this);
 	}
 
