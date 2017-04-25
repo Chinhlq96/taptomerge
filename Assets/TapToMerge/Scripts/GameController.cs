@@ -56,9 +56,12 @@ public class GameController : SingletonMonoBehaviour<GameController>
 
 	void Update()
 	{	//CheckMaxValue ();
-		CountNull ();
-		Fall ();
-		Fill ();
+
+		//CountNull ();
+		//Fall ();
+		//Fill ();
+	//	Move();
+
 		if (isGameOver)
 			Debug.Log ("Game Over!");	
 	}
@@ -80,18 +83,19 @@ public class GameController : SingletonMonoBehaviour<GameController>
 	}
 
 	void InstanceBlocks() {
-		Vector3 offset;
+
 		for (x = 0; x < gridSize; x++)
 		{
 			for (y = 0; y < gridSize; y++) 
 				for (int i = 0; i<blocks.Length; i++) 
 					if (blocks[i].value == grid [x, y]) 
 					{
-						offset = new Vector3 (offsetX*y, offsetY*x);
-						var block = Instantiate (blocks [i], startPos.position + offset, blocks [i].transform.rotation);
+						var pos = ConvertBoardToPosition (x, y+2*gridSize);
+						var block = Instantiate (blocks [i], pos, blocks [i].transform.rotation);
 						block.x = x;
 						block.y = y;
 						board [x, y] = block.GetComponent<BlockController> ();
+						block.Drop (x,y,true);
 					}
 
 			for (int i = 0; i<blocks.Length; i++) 
@@ -100,6 +104,12 @@ public class GameController : SingletonMonoBehaviour<GameController>
 		//Set lai order
 		for (int i = 0; i<blocks.Length; i++) 
 			blocks [i].gameObject.GetComponent<Renderer> ().sortingOrder = 0;
+	}
+
+	public Vector3 ConvertBoardToPosition(int x,int y)
+	{
+		Vector3 offset = new Vector3 (offsetY*x,offsetX*y);
+		return startPos.position + offset;
 	}
 
 	public void CheckTap (BlockController blockTap) 
@@ -138,7 +148,7 @@ public class GameController : SingletonMonoBehaviour<GameController>
 					//listOfPoint.Add (new Vector3 (1f, 1f, 1f));
 					Vector3[] path = listOfPoint.ToArray();
 
-					Debug.Log (path[0]);
+
 					//for (int j = 0; j < path.Length; j++) 
 
 					//block.gameObject.transform.DOMove (blockTap.transform.position,0.2f);
@@ -288,7 +298,7 @@ public class GameController : SingletonMonoBehaviour<GameController>
 	}
 
 	//Dem so block null tung cot 
-	void CountNull()
+	/*void CountNull()
 	{ 
 		nullCounter = new int[gridSize];
 		for (int i = 0; i < gridSize; i++) 
@@ -305,7 +315,7 @@ public class GameController : SingletonMonoBehaviour<GameController>
 			}
 		}
 
-	}
+	}*/
 
 	//Cac Block con lai roi xuong
 	void Fall()
@@ -323,12 +333,6 @@ public class GameController : SingletonMonoBehaviour<GameController>
 					while (board [i - 1, j] == null) 
 					{ 
 						
-						a++;
-						//dich vi tri block xuong 1
-						//translate
-						board [i, j].transform.position -= someVector;
-						//test DoMove 1
-						//board [i, j].gameObject.transform.DOMove (board [i, j].transform.position - someVector, 0f).WaitForCompletion();
 
 						//Gan lai gia tri x cua block
 						board [i, j].x -= 1;
@@ -353,7 +357,7 @@ public class GameController : SingletonMonoBehaviour<GameController>
 	}
 
 	//Tao block lap day khoang trong
-	void Fill()
+	/*void Fill()
 	{ 
 		Vector3 offset;
 		Vector3 offsetNgang;
@@ -423,6 +427,128 @@ public class GameController : SingletonMonoBehaviour<GameController>
 			}
 
 		}
+	}*/
+
+
+
+	IEnumerator MoveTo(Vector3 current,Vector3 target)
+	{
+		current = Vector3.MoveTowards (current, target, 1 * Time.deltaTime);
+		yield return null;
 	}
 
+	void Move()
+	{
+		Vector3 offset;
+		Vector3 offsetNgang;
+		Vector3 offsetDoc;
+		int randomValue = 0;
+
+
+
+
+
+		nullCounter = new int[gridSize];
+		for (int j = 0; j < gridSize; j++) 
+		{
+			nullCounter [j] = 0;
+		}
+
+		for (int j = 0; j < gridSize; j++) { 
+			
+			for (int i = 0; i < gridSize; i++)
+			{	
+				if (board [i, j] == null)
+					nullCounter [j]++;
+				if (board [i, j] != null) 
+				{	
+					//Vector3 current = board [i, j].gameObject.transform.position;
+					//Vector3 target = board [i, j].gameObject.transform.position - (someVector * nullCounter [j]);
+					//MoveTo (current, target);
+					board [i, j].gameObject.transform.position -= (someVector * nullCounter [j]);
+
+					Debug.Log (board [4, 1].transform.position);
+					Debug.Log(board [4, 1].transform.position- (someVector * nullCounter [j]));
+					Debug.Log (nullCounter [1]);
+
+				}
+
+					
+			}
+		}
+
+		//Fall ();
+
+		/*for (int j = 0; j < gridSize; j++) 
+		{
+			//nullCounter[j] la so block null cua cot j trong board[i,j]
+			for (int amountToFill = nullCounter [j]; amountToFill > 0; amountToFill--) 
+			{	
+			for (int slotToFill = nullCounter [j]; slotToFill > 0; slotToFill--) 
+			{	
+				//Check block co value max
+				foreach (BlockController blockCheck in board) 
+				{	
+					if(blockCheck!=null)
+					if (blockCheck.value >= maxValue)
+						maxValue = blockCheck.value;
+				}
+
+				//Cac truong hop tuong ung
+				switch (maxValue) 
+				{
+				case 4:
+					randomValue = (int)Random.Range (0f, 3f);
+					break;
+				case 5:
+				case 6:
+					randomValue = (int)Random.Range (0f, 4f);
+					break;
+				case 7:
+					randomValue = (int)Random.Range (0f, 5f);
+					break;
+				case 8:
+					randomValue = (int)Random.Range (0f, 5f);
+					break;
+				case 9:
+					randomValue = (int)Random.Range (0f, 6f);
+					break;
+				default:
+					randomValue = (int)Random.Range (0f, 7f);
+					break;
+
+
+				}
+
+				// Vi du j = 0 , co 1 block null (amountToFill = nullCounter = 1)  , i = gridSize - amountToFill = 5-1 =4 => board[i,j] 0,4 la cho can fill
+				int i = gridSize - slotToFill;
+				//vi fillPos o vi tri [0,6] nen phai "+ 1"
+				//offset = new Vector3 (offsetX*j, -(offsetY*(amountToFill+1)));
+				offsetNgang = new Vector3 (offsetX*j,0);
+				offsetDoc = new Vector3 (0, -(offsetY*(slotToFill+1))); 
+				//Tao Block roi move di
+				//var block = Instantiate (blocks [randomValue], fillPos.position + offset, blocks [randomValue].transform.rotation);
+				//Test DoMoveFill
+				var block = Instantiate (blocks [randomValue], fillPos.position+offsetNgang, blocks [randomValue].transform.rotation);
+				//block.gameObject.transform.DOMove (block.transform.position + offsetDoc, 0.5f);
+				Vector2.MoveTowards(block.transform.position,block.transform.position + offsetDoc,10.0f);
+				//block.gameObject.transform.Translate(offsetDoc,);
+				//Vector2.MoveTowards((Vector2)block.gameObject.transform.position,(Vector2)(block.gameObject.transform.position + offsetDoc),2f);
+				//block.gameObject.transform.position = Vector3.MoveTowards(block.transform.position,block.transform.position+offsetDoc,Time.deltaTime*1f);
+
+				//Gan gia tri x,y cho block / Gan block vao board
+				block.x = i;
+				block.y = j;
+				board [i, j] = block.GetComponent<BlockController> ();
+				board [i, j].GetComponent<SpriteRenderer> ().sortingOrder = -(i);
+				block.x = i;
+				block.y = j;
+				board [i, j] = block.GetComponent<BlockController> ();
+			}
+
+
+		}
+	}*/
+
+	}
 }
