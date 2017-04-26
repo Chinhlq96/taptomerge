@@ -107,14 +107,14 @@ public class ServiceAssistant : SingletonMonoBehaviour<ServiceAssistant> {
         if (native)
             switch (platform) {
                 case RuntimePlatform.Android:
-                    return "market://details?id=" + Application.identifier;
+                    return "market://details?id=" + Application.bundleIdentifier;
                 case RuntimePlatform.IPhonePlayer:
                 return "itms-apps://itunes.apple.com/app/id" + ProjectParameters.Instance.ios_AppID;
             }
 
         switch (platform) {
             case RuntimePlatform.Android:
-                return "https://play.google.com/store/apps/details?id=" + Application.identifier;
+                return "https://play.google.com/store/apps/details?id=" + Application.bundleIdentifier;
             case RuntimePlatform.IPhonePlayer:
                 return "https://itunes.apple.com/es/app/candy-crush-jelly-saga/id" + ProjectParameters.Instance.ios_AppID;
             default:

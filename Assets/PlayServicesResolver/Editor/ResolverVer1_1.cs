@@ -136,7 +136,7 @@ namespace GooglePlayServices
                 string body = sr.ReadToEnd();
                 sr.Close();
 
-                body = body.Replace("${applicationId}", PlayerSettings.applicationIdentifier);
+                body = body.Replace("${applicationId}", PlayerSettings.bundleIdentifier);
 
                 using (var wr = new StreamWriter(manifest, false))
                 {

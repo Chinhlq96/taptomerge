@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using EventManager;
+using System;
 
 public class BlockController : MonoBehaviour{
 
-	//[SerializeField] 	private int ID;
-	private static BlockController _instance;
+
 	public int value;
 	public int x;
 	public int y;
@@ -15,36 +15,38 @@ public class BlockController : MonoBehaviour{
 	[SerializeField] 	private Sprite activeForm;
 	[SerializeField]	private Sprite rightNowForm;
 	public float offset;
-	public bool isActivated;
+
 	public bool isTapped;
 
 	public bool Merged;
 	public GameObject boxMergeEffect;
 
 
-
-	public static BlockController Instance { get; private set; }
-
-	void Awake()
-	{
-		Instance = this;
-	}
+    public int sortingOrder
+    {
+        get { return GetComponent<Renderer>().sortingOrder; }
+        set { GetComponent<Renderer>().sortingOrder = value; }
+    }
+    
 
 	// Use this for initialization
-	void Start () {
-
-		isActivated = false;
+	void OnEnable () {
+        isActivated = false;
 		offset = 0.07f;
 		Merged = false;
 	}
 
-	void Update()
-	{
-		ActiveBlock ();
-		//MergeEffect ();
-	}
 
-	public void ActiveBlock ()
+    private bool _isActived;
+
+    public bool isActivated
+    {
+        get { return _isActived; }
+        set { _isActived = value; ActiveBlock(value); }
+    }
+    
+
+	public void ActiveBlock (bool isActivated)
 	{
 		rightNowForm = GetComponent<SpriteRenderer> ().sprite;
 		if (isActivated) 
@@ -64,7 +66,7 @@ public class BlockController : MonoBehaviour{
 			}
 		}
 	}
-	float speed=1f;
+
 	public void Drop(int x,int y,bool delay = false)
 	{
 		var newPos = GameController.Instance.ConvertBoardToPosition (x, y);
@@ -74,12 +76,19 @@ public class BlockController : MonoBehaviour{
 
 	}
 
-	public void Move (Vector3[] preBlockPos) {
-		transform.DOPath (preBlockPos, 0.2f).OnComplete(()=>{DestroyBlock();});
+	public void Move (Vector3[] preBlockPos,Action action=null) {
+        transform.DOPath(preBlockPos, 0.2f).OnComplete(() =>
+        {
+            DestroyBlock(); 
+            if (action!=null)
+            {
+                action.Invoke();
+            }
+        });
 	}
 
 	public void DestroyBlock () {
-		Destroy (gameObject);
+		ContentMgr.Instance.Despaw (gameObject);
 	}
 
 	public void OnMouseDown() 
