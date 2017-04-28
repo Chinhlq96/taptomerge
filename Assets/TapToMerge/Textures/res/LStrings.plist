@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>activeLanguages</key>
+	<array>
+		<string>en</string>
+		<string>zh-Hans</string>
+	</array>
+	<key>fileType</key>
+	<string>SpriteBuilderTranslations</string>
+	<key>fileVersion</key>
+	<integer>1</integer>
+	<key>translations</key>
+	<array>
+		<dict>
+			<key>key</key>
+			<string>随便一个按钮</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>what ever button</string>
+				<key>zh-Hans</key>
+				<string>随便一个按钮</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>YEAH!</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>YEAH!</string>
+				<key>zh-Hans</key>
+				<string>酷!</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>HI</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>HI</string>
+				<key>zh-Hans</key>
+				<string>你好</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>TRY TO GET</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>TRY TO GET</string>
+				<key>zh-Hans</key>
+				<string>試著合出來</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>HELLO</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>HI</string>
+				<key>zh-Hans</key>
+				<string>你好</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>TAP ON </string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>TAP ON </string>
+				<key>zh-Hans</key>
+				<string>点击</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>THEY POP UP</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>THEY POP UP</string>
+				<key>zh-Hans</key>
+				<string>他們浮了出來</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>CHOOSE A POSITION TO COMBINE</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>CHOOSE A POSITION TO COMBINE</string>
+				<key>zh-Hans</key>
+				<string>选择一个位置合成</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>TAP THESE</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>TAP</string>
+				<key>zh-Hans</key>
+				<string>点击</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>THEY WILL COMBINE</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>THEY WILL COMBINE</string>
+				<key>zh-Hans</key>
+				<string>方塊會在</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>IN THE POSITION YOU TAP</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>IN THE POSITION YOU TAP</string>
+				<key>zh-Hans</key>
+				<string>你再次點擊的位置合成</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>YOU GET</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>YOU GET</string>
+				<key>zh-Hans</key>
+				<string>你得到了</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>IS IT SIMPLE?</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>IS IT SIMPLE?</string>
+				<key>zh-Hans</key>
+				<string>這很簡單吧</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>YES!</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>YES!</string>
+				<key>zh-Hans</key>
+				<string>是的</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>TAP</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>TAP ADJACENT</string>
+				<key>zh-Hans</key>
+				<string>請點擊相連的</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>TAP ANY</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>TAP ADJACENT</string>
+				<key>zh-Hans</key>
+				<string>請點擊相連的</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>GOOD LUCK</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>GOOD LUCK</string>
+				<key>zh-Hans</key>
+				<string>好运</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>COMBINE THE TILES TO GET 10</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>COMBINE THE TILES TO GET 10</string>
+				<key>zh-Hans</key>
+				<string>合併方塊得到數字10</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>GO ON</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>GO ON</string>
+				<key>zh-Hans</key>
+				<string>繼續</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>SHARE</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>SHARE</string>
+				<key>zh-Hans</key>
+				<string>分享</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>CHOOSE A POSITION </string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>CHOOSE A POSITION </string>
+				<key>zh-Hans</key>
+				<string>選擇一個位置</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>TO COMBINE</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>TO COMBINE</string>
+				<key>zh-Hans</key>
+				<string>合併它們</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>GROW TO</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>GROW TO</string>
+				<key>zh-Hans</key>
+				<string>合併成了</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>I don't know where I am going,
+          but I am on my way. </string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>I don't know where I am going,
+          but I am on my way. </string>
+				<key>zh-Hans</key>
+				<string>我不知將去何方， 
+   但我已在路上。</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>CAPTURE!</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>CAPTURE!</string>
+				<key>zh-Hans</key>
+				<string>分享畫面</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>SHARE YOUR COLOR</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>SHARE YOUR COLOR</string>
+				<key>zh-Hans</key>
+				<string>分享你的色彩</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>NO MATCHES!</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>NO MATCHES!</string>
+				<key>zh-Hans</key>
+				<string>沒有方塊可以合併了</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>PLAY</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>PLAY</string>
+				<key>zh-Hans</key>
+				<string>重來</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>I GOT IT!</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>I GOT IT!</string>
+				<key>zh-Hans</key>
+				<string>我合到了</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>Hope is a waking dream.</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>Hope is a waking dream.</string>
+				<key>zh-Hans</key>
+				<string>希望是醒來的夢</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>UNLIMITED LIVES</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>NO ADS</string>
+				<key>zh-Hans</key>
+				<string>無廣告</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>GREAT!</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>GREAT!</string>
+				<key>zh-Hans</key>
+				<string>好的!</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>TIME MODE</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>NEW MODES</string>
+				<key>zh-Hans</key>
+				<string>新遊戲模式</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>UNLOCKED!</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>UNLOCKED!</string>
+				<key>zh-Hans</key>
+				<string>新模式解鎖!</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>DO YOUR BEST in</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>DO YOUR BEST in</string>
+				<key>zh-Hans</key>
+				<string>盡力得到高分</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>TIME’S UP</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>TIME'S UP</string>
+				<key>zh-Hans</key>
+				<string>時間到了</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>Leaderboard</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>Leaderboard</string>
+				<key>zh-Hans</key>
+				<string>排行榜</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>Achievements</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>Achievements</string>
+				<key>zh-Hans</key>
+				<string>成就</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>BREAK YOUR LIMIT</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>· ·  BREAK YOUR LIMIT · · </string>
+				<key>zh-Hans</key>
+				<string>· · 挑戰你的極限 · · </string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>ARCADE</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>ARCADE</string>
+				<key>zh-Hans</key>
+				<string>限時模式</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>Get 10 in limited time.</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>Get 10 in limited time.</string>
+				<key>zh-Hans</key>
+				<string>在有限時間內合到10 </string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>· · ·  TRY TO GET 11  · · ·</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>· · ·  TRY TO GET 11  · · ·</string>
+				<key>zh-Hans</key>
+				<string>· · ·  繼續合出11  · · ·</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>NEW GOAL</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>NEW GOAL</string>
+				<key>zh-Hans</key>
+				<string>新的目標</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>DEATH</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>DEATH</string>
+				<key>zh-Hans</key>
+				<string>死亡模式</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>The real challenge for you</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>Great challenge for you</string>
+				<key>zh-Hans</key>
+				<string>迎接真正的挑戰</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>COMING SOON</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>COMING SOON</string>
+				<key>zh-Hans</key>
+				<string>正在製作中</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>BACK</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>BACK</string>
+				<key>zh-Hans</key>
+				<string>返回</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>TIME WAITS FOR NO MAN</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>TIME WAITS FOR NO MAN</string>
+				<key>zh-Hans</key>
+				<string>時間不等人</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>Make a quickly decision</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>Make a quickly decision</string>
+				<key>zh-Hans</key>
+				<string>快速做出决定</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>key</key>
+			<string>FLASH</string>
+			<key>translations</key>
+			<dict>
+				<key>en</key>
+				<string>FLASH</string>
+				<key>zh-Hans</key>
+				<string>閃電模式</string>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>
