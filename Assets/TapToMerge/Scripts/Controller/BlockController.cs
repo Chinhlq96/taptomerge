@@ -69,13 +69,15 @@ public class BlockController : MonoBehaviour{
 	{
 		var newPos = GameController.Instance.ConvertBoardToPosition (x, y);
 		float distance = Vector3.Distance (transform.position, newPos);
-		float timeDelay = delay ? (x+y*5)*0.05f:0f;
-		transform.DOMoveY (newPos.y, distance / 25f).SetDelay(timeDelay);
+		float timeDelay = delay ? (x + y * 5) * 0.05f : 0f;
+		transform.DOMoveY (newPos.y, distance / 25f).SetDelay (timeDelay);
 
 	}
 
 	public void Move (Vector3[] preBlockPos) {
-		transform.DOPath (preBlockPos, 0.2f).OnComplete(()=>{DestroyBlock();});
+		transform.DOPath (preBlockPos, 0.2f).OnComplete (() => {
+			DestroyBlock ();
+		});
 	}
 
 	public void DestroyBlock () {

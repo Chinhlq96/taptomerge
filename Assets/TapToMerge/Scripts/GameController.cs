@@ -7,31 +7,22 @@ using DG.Tweening;
 public class GameController : SingletonMonoBehaviour<GameController>
 {
 	private int gridSize = 5;
-	//private int x;
-	//private int y;
 	private int[,] grid;
 	private int score;
-	//
 
 	private int maxValue = 0;
-	private int[] nullCounter;
 
 	public bool isMerging;
 	public float offset = 0.07f;
 	public bool isMoving;
-	//-------
 	// Kiem tra game over = 10 hoac het block ket noi
 	private bool isGameOver;
 	// Kiem tra game over het block ket noi
 	private bool checkGameOver;
 	private BlockController[,] board;
-	private Vector3 someVector = new Vector3(0.0f,0.777f,0.0f);
-	//-------
 
 	[SerializeField]
 	private Transform startPos;
-	[SerializeField]
-	private Transform fillPos;
 	[SerializeField]
 	private BlockController[] blocks; 
 	[SerializeField]
@@ -64,17 +55,12 @@ public class GameController : SingletonMonoBehaviour<GameController>
 			Debug.Log ("Game Over!");	
 	}
 	void GenerateGrid() {
-		var test = 0;
 		grid = new int[gridSize, gridSize];
 		board = new BlockController[gridSize,gridSize];
 		//Gen blocks value
 		for (int x = 0; x < gridSize; x++)
 			for (int y = 0; y < gridSize; y++) 
 			{
-				if (test < 10)
-					test++;
-				else
-					test = 1;
 				grid [x, y] = (int)Random.Range (1f, 5f);
 			}
 	}
@@ -87,14 +73,14 @@ public class GameController : SingletonMonoBehaviour<GameController>
 				for (int i = 0; i<blocks.Length; i++) 
 					if (blocks[i].value == grid [x, y]) 
 					{
-						var pos = ConvertBoardToPosition (x, y+2*gridSize);
+						var pos = ConvertBoardToPosition (x, y + 2 * gridSize);
 						var block = Instantiate (blocks [i], pos, blocks [i].transform.rotation);
 						block.x = x;
 						block.y = y;
 
 						board [x, y] = block.GetComponent<BlockController> ();
 						board[x,y].Drop (x,y,true);
-						board [x, y].gameObject.name = x +""+ y;
+						board [x, y].gameObject.name = x + "" + y;
 						board [x, y].gameObject.GetComponent<Renderer> ().sortingOrder = -y;
 
 					}
@@ -152,7 +138,7 @@ public class GameController : SingletonMonoBehaviour<GameController>
 			else
 				score += pointPerBlock * (blockTap.value * 2 + count - 2) - (blockTap.value - 2);
 			
-			StartCoroutine(WaitMerge(0.2f,blockTap,newBlock));
+			StartCoroutine (WaitMerge (0.25f, blockTap, newBlock));
 		}
 
 	}
@@ -169,8 +155,6 @@ public class GameController : SingletonMonoBehaviour<GameController>
 		}
 		isMerging = false;
 //		Debug.Log (score);
-		isMoving = true;
-
 		if (!isMerging)
 			Move();
 	}
@@ -280,22 +264,22 @@ public class GameController : SingletonMonoBehaviour<GameController>
 		foreach (BlockController block in board) 
 		{
 			checkGameOver = true;
-			for (int x = 0; x < gridSize; x += 2)
-				for (int y = 0; y < gridSize; y += 2) 
+			for (int x = 0; x < gridSize; x++)
+				for (int y = 0; y < gridSize; y++) 
 				{
 					var currentBlock = board [x, y];
 					//Kiem tra 4 huong.
 					if ((currentBlock.x + 1 < gridSize)
-						&& (board [currentBlock.x + 1, currentBlock.y].value == currentBlock.value)) 
+					   && (board [currentBlock.x + 1, currentBlock.y].value == currentBlock.value))
 						checkGameOver = false;
-					if ((currentBlock.y + 1 < gridSize) 
-						&& (board [currentBlock.x, currentBlock.y + 1].value == currentBlock.value)) 
+					if ((currentBlock.y + 1 < gridSize)
+					   && (board [currentBlock.x, currentBlock.y + 1].value == currentBlock.value))
 						checkGameOver = false;
-					if ((currentBlock.x - 1 >= 0) 
-						&& (board [currentBlock.x - 1, currentBlock.y].value == currentBlock.value)) 
+					if ((currentBlock.x - 1 >= 0)
+					   && (board [currentBlock.x - 1, currentBlock.y].value == currentBlock.value))
 						checkGameOver = false;
-					if ((currentBlock.y - 1 >= 0) 
-						&& (board [currentBlock.x, currentBlock.y - 1].value == currentBlock.value)) 
+					if ((currentBlock.y - 1 >= 0)
+					   && (board [currentBlock.x, currentBlock.y - 1].value == currentBlock.value))
 						checkGameOver = false;
 				}
 			if (checkGameOver)
@@ -305,6 +289,7 @@ public class GameController : SingletonMonoBehaviour<GameController>
 
 	void Move()
 	{	
+		isMoving = true;
 		int randomValue = 0;
 		int countNull = 0;
 		for (int i = 0; i < gridSize; i++) 
@@ -372,12 +357,11 @@ public class GameController : SingletonMonoBehaviour<GameController>
 				board [i, newY].gameObject.name = i +""+ (newY);
 				board [i,newY].gameObject.GetComponent<Renderer> ().sortingOrder = -(newY);
 			}
-			
-			Debug.Log ("CHECK NULL "+i + " -  " + countNull);
+			//Debug.Log ("CHECK NULL "+i + " -  " + countNull);
 			countNull = 0;
 		}
 		isMoving = false;
-		if (!isMoving && !isMerging)
-			CheckGameOver();
+		if (!isMoving)
+			CheckGameOver ();
 	}
 }
