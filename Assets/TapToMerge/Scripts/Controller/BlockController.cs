@@ -13,19 +13,24 @@ public class BlockController : MonoBehaviour{
 	public int y;
 	[SerializeField]	private Sprite normalForm;
 	[SerializeField] 	private Sprite activeForm;
-	[SerializeField]	private Sprite rightNowForm;
+
 	public float offset;
 
-	public bool isTapped;
-
-	public bool Merged;
-	public GameObject boxMergeEffect;
-
+    SpriteRenderer _spriteRenderer;
+    SpriteRenderer spriteRenderer 
+    {
+        get{ 
+            if(_spriteRenderer==null)
+                _spriteRenderer = GetComponent<SpriteRenderer>();
+            return _spriteRenderer;
+        }
+    }
+    
 
     public int sortingOrder
     {
-        get { return GetComponent<Renderer>().sortingOrder; }
-        set { GetComponent<Renderer>().sortingOrder = value; }
+        get { return spriteRenderer.sortingOrder; }
+        set { spriteRenderer.sortingOrder = value; }
     }
     
 
@@ -33,38 +38,48 @@ public class BlockController : MonoBehaviour{
 	void OnEnable () {
         isActivated = false;
 		offset = 0.07f;
-		Merged = false;
 	}
 
+    public void Init(int x,int y,int value, int sortingOrder)
+    {
+        this.x = x;
+        this.y = y;
+        this.value = value;
+        this.sortingOrder = sortingOrder;
+        gameObject.name =x + "" + y;
+    }
+    public void Init(int x,int y, int sortingOrder)
+    {
+        this.x = x;
+        this.y = y;
+        this.sortingOrder = sortingOrder;
+        gameObject.name =x + "" + y;
+    }
 
     private bool _isActived;
 
     public bool isActivated
     {
         get { return _isActived; }
-        set { _isActived = value; ActiveBlock(value); }
+        set
+        { 
+                _isActived = value;
+                ActiveBlock(value);
+        }
     }
     
 
-	public void ActiveBlock (bool isActivated)
+	void ActiveBlock (bool isActivated)
 	{
-		rightNowForm = GetComponent<SpriteRenderer> ().sprite;
-		if (isActivated) 
-		{
-			GetComponent<SpriteRenderer>().sprite = activeForm;
-			if (rightNowForm != GetComponent<SpriteRenderer> ().sprite) 
-			{
-				transform.position = new Vector2 (transform.position.x, transform.position.y + offset);
-			}
-		}
-		else
-		{
-			GetComponent<SpriteRenderer>().sprite = normalForm;
-			if (rightNowForm != GetComponent<SpriteRenderer> ().sprite) 
-			{
-				transform.position = new Vector2 (transform.position.x, transform.position.y - offset);
-			}
-		}
+        var newPos = GameController.Instance.ConvertBoardToPosition (x, y);
+
+        spriteRenderer.sprite = isActivated ?activeForm: normalForm;
+        if (isActivated)
+        {
+            newPos = new Vector2(newPos.x,newPos.y+offset); 
+        }
+
+        transform.position = newPos;
 	}
 
 	public void Drop(int x,int y,bool delay = false)
@@ -79,32 +94,24 @@ public class BlockController : MonoBehaviour{
 	public void Move (Vector3[] preBlockPos,Action action=null) {
         transform.DOPath(preBlockPos, 0.2f).OnComplete(() =>
         {
+                if (action!=null)
+                {
+                    action.Invoke();
+                }
             DestroyBlock(); 
-            if (action!=null)
-            {
-                action.Invoke();
-            }
+            
         });
 	}
 
 	public void DestroyBlock () {
-		ContentMgr.Instance.Despaw (gameObject);
+        //Destroy(gameObject);
+        ContentMgr.Instance.Despaw (gameObject);
 	}
 
 	public void OnMouseDown() 
 	{
-		isTapped = true;
-		if (this==null) {
-			Debug.Log ("null");
-		}
-		this.PostEvent (EventID.BlockTap, this);
+        this.PostEvent (EventID.BlockTap, this);
+       // GameController.Instance.CheckTap(new Vector2(x,y));
 	}
-
-	public void MergeEffect ()
-	{
-		if (Merged) 
-		{
-			boxMergeEffect.SetActive (true);
-		}
-	}
+        
 }

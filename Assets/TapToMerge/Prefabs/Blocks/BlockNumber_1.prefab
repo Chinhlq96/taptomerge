@@ -38,7 +38,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4495340147490598}
   - component: {fileID: 212346532047944708}
-  - component: {fileID: 114559310942326342}
   m_Layer: 0
   m_Name: MergeEffect
   m_TagString: Untagged
@@ -98,18 +97,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.11, y: 1.21}
   m_EdgeRadius: 0
---- !u!114 &114559310942326342
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1944559534166086}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae15e6a290988eb4bbad9aafbfba4324, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  preScale: {x: 0, y: 0}
 --- !u!114 &114835169258161566
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -126,12 +113,7 @@ MonoBehaviour:
   y: 0
   normalForm: {fileID: 21300000, guid: 12ce0966f8cb566498e1bce48e3de759, type: 3}
   activeForm: {fileID: 21300000, guid: 65dce4f5b10275349bb67ff83bc1e7c5, type: 3}
-  rightNowForm: {fileID: 0}
   offset: 0
-  isActivated: 0
-  isTapped: 0
-  Merged: 1
-  boxMergeEffect: {fileID: 1944559534166086}
 --- !u!212 &212104665930542070
 SpriteRenderer:
   m_ObjectHideFlags: 1

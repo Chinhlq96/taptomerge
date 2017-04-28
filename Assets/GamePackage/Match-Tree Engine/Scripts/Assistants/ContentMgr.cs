@@ -18,7 +18,6 @@ public class ContentMgr : SingletonMonoBehaviour<ContentMgr> {
 
 
     public T GetItem<T> (string key, Vector3 position) where T : Component {
-        Debug.Log(key);
 		zObj = GetItem (key);
 		zObj.transform.position = position;
 		return zObj.GetComponent<T>();

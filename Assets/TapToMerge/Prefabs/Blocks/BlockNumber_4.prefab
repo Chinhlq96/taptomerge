@@ -38,7 +38,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4548483050829142}
   - component: {fileID: 212031700075672356}
-  - component: {fileID: 114652872834359704}
   m_Layer: 0
   m_Name: MergeEffect
   m_TagString: Untagged
@@ -114,24 +113,7 @@ MonoBehaviour:
   y: 0
   normalForm: {fileID: 21300000, guid: 0f3a72ba84f312841bafff7fae6f81ee, type: 3}
   activeForm: {fileID: 21300000, guid: 1f7dfec0e9878d740bba39fd36fc73e9, type: 3}
-  rightNowForm: {fileID: 0}
   offset: 0
-  isActivated: 0
-  isTapped: 0
-  Merged: 0
-  boxMergeEffect: {fileID: 1711109022826102}
---- !u!114 &114652872834359704
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1711109022826102}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae15e6a290988eb4bbad9aafbfba4324, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  preScale: {x: 0, y: 0}
 --- !u!212 &212031700075672356
 SpriteRenderer:
   m_ObjectHideFlags: 1

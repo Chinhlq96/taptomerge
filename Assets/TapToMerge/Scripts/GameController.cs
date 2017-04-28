@@ -14,7 +14,7 @@ public class GameController : SingletonMonoBehaviour<GameController>
     private int maxValue = 0;
 
     public bool isMerging;
-    public float offset = 0.07f;
+  //  public float offset = 0.07f;
 
     //-------
     // Kiem tra game over = 10 hoac het block ket noi
@@ -68,15 +68,10 @@ public class GameController : SingletonMonoBehaviour<GameController>
                 var value = (int)Random.Range(1f, 5f);
                 var block = ContentMgr.Instance.GetItem<BlockController>("block" + value, pos);
 
-                block.x = x;
-                block.y = y;
-                block.value = value;
-
-                board[x, y] = block.GetComponent<BlockController>();
+                block.Init(x, y, value, -y);
+                board[x, y] = block;
                 board[x, y].Drop(x, y, true);
-                board[x, y].gameObject.name = x + "" + y;
-                board[x, y].sortingOrder = -y;
-
+              
             }
         }
     }
@@ -113,15 +108,7 @@ public class GameController : SingletonMonoBehaviour<GameController>
             isMerging = true;
             int  count = 0;
 
-            var newValue = blockTap.value + 1;
-
-            var newBlock = ContentMgr.Instance.GetItem<BlockController>("block" + newValue, blockTap.transform.position);
-            newBlock.x = blockTap.x;
-            newBlock.y = blockTap.y;
-
-            newBlock.sortingOrder = blockTap.sortingOrder;
-            newBlock.gameObject.SetActive(false);
-            newBlock.gameObject.name = newBlock.x + "" + newBlock.y;
+           
             foreach (BlockController block in blocksActivated)
             {
                 //Move ve theo path
@@ -132,7 +119,7 @@ public class GameController : SingletonMonoBehaviour<GameController>
 
                     Vector3[] path = BFSFindPath(block, blockTap).ToArray();
                     block.sortingOrder -= 10;
-                    block.Move(path, () => { board[block.x, block.y] = null; });
+                    block.Move(path, () => { board[block.x, block.y]=null; });
                     
                 }
 
@@ -145,18 +132,25 @@ public class GameController : SingletonMonoBehaviour<GameController>
             else
                 score += pointPerBlock * (blockTap.value * 2 + count - 2) - (blockTap.value - 2);
 
-            StartCoroutine(WaitMerge(0.2f, blockTap, newBlock));
+            StartCoroutine(WaitMerge(0.25f, blockTap));
 
         }
 
     }
-    IEnumerator WaitMerge(float duration, BlockController blockTap, BlockController newBlock)
+    IEnumerator WaitMerge(float duration, BlockController blockTap)
     {
         yield return new WaitForSeconds(duration);   //Wait
-        newBlock.gameObject.SetActive(true);
-        newBlock.transform.position -= new Vector3(0f, offset, 0f);
+  
+      //  newBlock.transform.position -= new Vector3(0f, offset, 0f);
         ContentMgr.Instance.Despaw(blockTap.gameObject);
-        board[newBlock.x, newBlock.y] = newBlock.GetComponent<BlockController>();
+        //board[blockTap.x, blockTap.y] = null;
+        var newValue = blockTap.value + 1;
+        var newBlock = ContentMgr.Instance.GetItem<BlockController>("block" + newValue, blockTap.transform.position);
+        newBlock.Init(blockTap.x, blockTap.y, blockTap.sortingOrder);
+ 
+        newBlock.isActivated = false;
+
+        board[newBlock.x, newBlock.y] = newBlock;
 
         if (newBlock.value == 10)
         {
@@ -179,6 +173,11 @@ public class GameController : SingletonMonoBehaviour<GameController>
         while (queue.Count > 0)
         {
             currentBlock = queue.Dequeue();
+            if (currentBlock.value == -1)
+            {
+                Debug.Log("--------------");
+                continue;
+            }
             //Kiem tra tim dc 4 huong.
             if ((currentBlock.x + 1 < gridSize)
                 && (board[currentBlock.x + 1, currentBlock.y].value == currentBlock.value) && (!board[currentBlock.x + 1, currentBlock.y].isActivated))
@@ -233,6 +232,11 @@ public class GameController : SingletonMonoBehaviour<GameController>
         while (queue.Count > 0)
         {
             currentBlock = queue.Dequeue();
+            if (currentBlock.value == -1)
+            {
+                Debug.Log("--------------");
+                continue;
+            }
             visit[currentBlock.x, currentBlock.y] = 1; // = 1 la da tham
             // Neu bang target thi Add vi tri va thoat
             if ((currentBlock.x == targetBlock.x) && (currentBlock.y == targetBlock.y))
@@ -287,6 +291,11 @@ public class GameController : SingletonMonoBehaviour<GameController>
                 for (int y = 0; y < gridSize; y += 2)
                 {
                     var currentBlock = board[x, y];
+                    if (currentBlock == null)
+                    {
+                        Debug.Log("--------------");
+                        continue;
+                    }
                     //Kiem tra 4 huong.
                     if ((currentBlock.x + 1 < gridSize)
                         && (board[currentBlock.x + 1, currentBlock.y].value == currentBlock.value))
@@ -325,16 +334,14 @@ public class GameController : SingletonMonoBehaviour<GameController>
                 else
                 {
                     //check khong cho tu null
-                    if (board[i, j - countNull] == null)
+                    if (countNull != 0)
                     {
                         board[i, j].Drop(i, j - countNull);
-                        //update y truoc khi gan vao board
-                        board[i, j].y -= countNull;
-                        board[i, j - countNull] = board[i, j];
 
-                        board[i, j - countNull].gameObject.name = i + "" + (j - countNull);
-                        board[i, j - countNull].sortingOrder = -(j - countNull);
-                        board[i, j] = null;
+                        board[i, j - countNull] = board[i, j];
+                        board[i, j - countNull].Init(i,j-countNull,board[i, j].value,-(j - countNull));
+
+                       // board[i, j] = null;
                     }
                 }
             }
@@ -375,21 +382,15 @@ public class GameController : SingletonMonoBehaviour<GameController>
 
 
                 }
-                var block = ContentMgr.Instance.GetItem<BlockController>("block"+(randomValue+1), pos);
+
                 var newY = gridSize - countNull + k;
-                block.x = i;
-                block.y = newY;
-
-                board[i, newY] = block.GetComponent<BlockController>();
+                board[i, newY] =ContentMgr.Instance.GetItem<BlockController>("block"+(randomValue+1), pos);
+                board[i, newY].Init(i, newY, randomValue + 1, -newY);
                 board[i, newY].Drop(i, newY);
-                board[i, newY].gameObject.name = i + "" + (newY);
-                board[i, newY].sortingOrder = -(newY);
+
             }
-
-
-
-            Debug.Log("CHECK NULL " + i + " -  " + countNull);
             countNull = 0;
         }
+
     }
 }

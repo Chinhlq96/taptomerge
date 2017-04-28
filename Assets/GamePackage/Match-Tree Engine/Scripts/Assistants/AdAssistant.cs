@@ -7,7 +7,7 @@ using ChartboostSDK;
 using GoogleMobileAds.Api;
 using Berry.Utils;
 #if !UNITY_WEBGL
-using UnityEngine.Advertisements;
+//using UnityEngine.Advertisements;
 #endif
 
 public class AdAssistant : SingletonMonoBehaviour<AdAssistant> {
@@ -139,7 +139,7 @@ public class AdAssistant : SingletonMonoBehaviour<AdAssistant> {
 
     bool IsReady(AdNetwork network) {
         #if !UNITY_WEBGL
-        if (network == AdNetwork.UnityAds) return Advertisement.IsReady(GetZoneId(network));
+     //   if (network == AdNetwork.UnityAds) return Advertisement.IsReady(GetZoneId(network));
         if (network == AdNetwork.Chartboost) return Chartboost.hasInterstitial(CBLocation.Default);
         if (network == AdNetwork.AdColony) return adColonyVideoAvailable.ContainsKey(GetZoneId(network)) ? adColonyVideoAvailable[GetZoneId(network)] : false;
         if (network == AdNetwork.AdMob) return AdMob_Interstitial.IsLoaded();
@@ -200,18 +200,18 @@ public class AdAssistant : SingletonMonoBehaviour<AdAssistant> {
 
         #if !UNITY_WEBGL
         switch (network) {
-            case AdNetwork.UnityAds:
-                Advertisement.Show(GetZoneId(network), new ShowOptions {
-                    resultCallback = result => {
-                        if (result == ShowResult.Finished) {
-                            if (reward != null) {
-                                reward.Invoke();
-                                reward = null;
-                            }
-                        }
-                    }
-                });
-                yield break;
+//            case AdNetwork.UnityAds:
+//                Advertisement.Show(GetZoneId(network), new ShowOptions {
+//                    resultCallback = result => {
+//                        if (result == ShowResult.Finished) {
+//                            if (reward != null) {
+//                                reward.Invoke();
+//                                reward = null;
+//                            }
+//                        }
+//                    }
+//                });
+//                yield break;
             case AdNetwork.Chartboost:
                 OnAdOpen();
                 Chartboost.showInterstitial(CBLocation.Default);

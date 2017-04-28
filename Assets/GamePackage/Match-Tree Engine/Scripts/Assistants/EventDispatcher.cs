@@ -27,12 +27,12 @@ namespace EventManager
         {
             #region
             // check if listener exist in distionary
-            //if (_listenersDict.ContainsKey(eventID))
-            //{
-            //    // add callback to our collection
-            //    _listenersDict[eventID].Add(callback);
-            //}
-            //else
+            if (_listenersDict.ContainsKey(eventID))
+            {
+                // add callback to our collection
+                _listenersDict[eventID].Add(callback);
+            }
+            else
             if (!_listenersDict.ContainsKey(eventID))
             {
                 // add new key-value pair
