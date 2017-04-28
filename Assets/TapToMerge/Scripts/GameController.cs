@@ -65,18 +65,43 @@ public class GameController : SingletonMonoBehaviour<GameController>
 	}
 	void GenerateGrid() {
 		var test = 0;
+		int randomNumber;
+		bool block4Mark = false; 
 		grid = new int[gridSize, gridSize];
 		board = new BlockController[gridSize,gridSize];
 		//Gen blocks value
-		for (int x = 0; x < gridSize; x++)
+		//for (int x = 0; x < gridSize; x++)
+//			for (int y = 0; y < gridSize; y++) 
+//			{
+//				grid [x, y] = Random.Range (1, 4);
+//
+//			}
+//		grid [(int)Random.Range (0, 5), (int)Random.Range (0, 5)] = 4;
+		for (int x = 0; x < gridSize; x++) 
+		{
 			for (int y = 0; y < gridSize; y++) 
 			{
-				if (test < 10)
-					test++;
-				else
-					test = 1;
-				grid [x, y] = (int)Random.Range (1f, 5f);
+				Loop:
+				randomNumber = (int)Random.Range (1, 101);
+				if (randomNumber <= 40) {
+					grid [x, y] = 1;
+				} else if (randomNumber <= 70) {
+					grid [x, y] = 2;
+				} else if (randomNumber <= 80) {
+					grid [x, y] = 3;
+				} else if (randomNumber <= 100) {
+					if (block4Mark == true)
+						goto Loop;
+					grid [x, y] = 4;
+					block4Mark = true;
+				}
+
 			}
+
+		}
+		if (!block4Mark)
+			grid [Random.Range (0, 5), Random.Range (0, 5)] = 4;
+
 	}
 
 	void InstanceBlocks() {
@@ -280,8 +305,8 @@ public class GameController : SingletonMonoBehaviour<GameController>
 		foreach (BlockController block in board) 
 		{
 			checkGameOver = true;
-			for (int x = 0; x < gridSize; x += 2)
-				for (int y = 0; y < gridSize; y += 2) 
+			for (int x = 0; x < gridSize; x++)
+				for (int y = 0; y < gridSize; y++) 
 				{
 					var currentBlock = board [x, y];
 					//Kiem tra 4 huong.
@@ -307,6 +332,8 @@ public class GameController : SingletonMonoBehaviour<GameController>
 	{	
 		int randomValue = 0;
 		int countNull = 0;
+		isMoving = true;
+
 		for (int i = 0; i < gridSize; i++) 
 		{
 			for (int j = 0; j < gridSize; j++) {
@@ -377,7 +404,7 @@ public class GameController : SingletonMonoBehaviour<GameController>
 			countNull = 0;
 		}
 		isMoving = false;
-		if (!isMoving && !isMerging)
+		if (!isMoving)
 			CheckGameOver();
 	}
 }
