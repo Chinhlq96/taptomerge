@@ -85,10 +85,9 @@ public class BlockController : MonoBehaviour{
 	public void OnMouseDown() 
 	{
 		isTapped = true;
-		if (this==null) {
-			Debug.Log ("null");
+		if (!GameController.Instance.isMoving && !GameController.Instance.isMerging) {
+			this.PostEvent (EventID.BlockTap, this);
 		}
-		this.PostEvent (EventID.BlockTap, this);
 	}
 
 	public void MergeEffect ()
