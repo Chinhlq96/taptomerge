@@ -7,8 +7,8 @@ using DG.Tweening;
 public class GameController : SingletonMonoBehaviour<GameController>
 {
 	private int gridSize = 5;
-	private int x;
-	private int y;
+	//private int x;
+	//private int y;
 	private int[,] grid;
 	private int score;
 	//
@@ -18,7 +18,7 @@ public class GameController : SingletonMonoBehaviour<GameController>
 
 	public bool isMerging;
 	public float offset = 0.07f;
-
+	public bool isMoving;
 	//-------
 	// Kiem tra game over = 10 hoac het block ket noi
 	private bool isGameOver;
@@ -42,27 +42,24 @@ public class GameController : SingletonMonoBehaviour<GameController>
 	void OnEnable()
 	{
 		this.RegisterListener (EventID.BlockTap, (sender, param) => CheckTap ((BlockController)param));
-
 	}
 
 	void OnDisable()
 	{
 		this.RemoveListener (EventID.BlockTap, (sender, param) => CheckTap ((BlockController)param));
 	}
+
 	void Start () 
 	{
+		isMoving = false;
 		isMerging = false;
 		score = 0;
 		GenerateGrid ();
 		InstanceBlocks ();
-
 	}
 
 	void Update()
-	{	//CheckMaxValue ();
-		CountNull ();
-		Fall ();
-		Fill ();
+	{	
 		if (isGameOver)
 			Debug.Log ("Game Over!");	
 	}
@@ -71,8 +68,8 @@ public class GameController : SingletonMonoBehaviour<GameController>
 		grid = new int[gridSize, gridSize];
 		board = new BlockController[gridSize,gridSize];
 		//Gen blocks value
-		for (x = 0; x < gridSize; x++)
-			for (y = 0; y < gridSize; y++) 
+		for (int x = 0; x < gridSize; x++)
+			for (int y = 0; y < gridSize; y++) 
 			{
 				if (test < 10)
 					test++;
@@ -83,29 +80,33 @@ public class GameController : SingletonMonoBehaviour<GameController>
 	}
 
 	void InstanceBlocks() {
-		Vector3 offset;
-		for (x = 0; x < gridSize; x++)
+
+		for (int x = 0; x < gridSize; x++)
 		{
-			for (y = 0; y < gridSize; y++) 
+			for (int y = 0; y < gridSize; y++) 
 				for (int i = 0; i<blocks.Length; i++) 
 					if (blocks[i].value == grid [x, y]) 
 					{
-						offset = new Vector3 (offsetX*y, offsetY*x);
-						var block = Instantiate (blocks [i], startPos.position + offset, blocks [i].transform.rotation);
+						var pos = ConvertBoardToPosition (x, y+2*gridSize);
+						var block = Instantiate (blocks [i], pos, blocks [i].transform.rotation);
 						block.x = x;
 						block.y = y;
-						board [x, y] = block.GetComponent<BlockController> (); 
-					}
 
-			for (int i = 0; i<blocks.Length; i++) 
-				blocks [i].gameObject.GetComponent<Renderer> ().sortingOrder--;
+						board [x, y] = block.GetComponent<BlockController> ();
+						board[x,y].Drop (x,y,true);
+						board [x, y].gameObject.name = x +""+ y;
+						board [x, y].gameObject.GetComponent<Renderer> ().sortingOrder = -y;
+
+					}
 		}
-		//Set lai order
-		for (int i = 0; i<blocks.Length; i++) 
-			blocks [i].gameObject.GetComponent<Renderer> ().sortingOrder = 0;
 	}
 
 
+	public Vector3 ConvertBoardToPosition(int x,int y)
+	{
+		Vector3 offset = new Vector3 (offsetY*x,offsetX*y);
+		return startPos.position + offset;
+	}
 
 	public void CheckTap (BlockController blockTap) 
 	{
@@ -137,6 +138,7 @@ public class GameController : SingletonMonoBehaviour<GameController>
 				count++;
 				if (block != blockTap) {
 					var listOfPoint = new List<Vector3>();
+
 					Vector3[] path = BFSFindPath (block, blockTap).ToArray ();
 					block.gameObject.GetComponent<Renderer> ().sortingOrder -= 10;
 					block.Move (path);
@@ -151,8 +153,8 @@ public class GameController : SingletonMonoBehaviour<GameController>
 				score += pointPerBlock * (blockTap.value * 2 + count - 2) - (blockTap.value - 2);
 			
 			StartCoroutine(WaitMerge(0.2f,blockTap,newBlock));
-
 		}
+
 	}
 	IEnumerator WaitMerge(float duration,BlockController blockTap,BlockController newBlock)
 	{
@@ -161,13 +163,16 @@ public class GameController : SingletonMonoBehaviour<GameController>
 		newBlock.transform.position -= new Vector3 (0f, offset, 0f);
 		Destroy (blockTap.gameObject);
 		board [newBlock.x, newBlock.y] = newBlock.GetComponent<BlockController> ();
-		CheckGameOver();
 		if (newBlock.value == 10) 
 		{
 			isGameOver = true;
 		}
 		isMerging = false;
-		Debug.Log (score);
+//		Debug.Log (score);
+		isMoving = true;
+
+		if (!isMerging)
+			Move();
 	}
 	List<BlockController> blocksActivated = new List<BlockController> ();
 
@@ -275,8 +280,8 @@ public class GameController : SingletonMonoBehaviour<GameController>
 		foreach (BlockController block in board) 
 		{
 			checkGameOver = true;
-			for (x = 0; x < gridSize; x += 2)
-				for (y = 0; y < gridSize; y += 2) 
+			for (int x = 0; x < gridSize; x += 2)
+				for (int y = 0; y < gridSize; y += 2) 
 				{
 					var currentBlock = board [x, y];
 					//Kiem tra 4 huong.
@@ -295,96 +300,46 @@ public class GameController : SingletonMonoBehaviour<GameController>
 				}
 			if (checkGameOver)
 				isGameOver = true;
-
 		}
-
 	}
 
-	//Dem so block null tung cot 
-	void CountNull()
-	{ 
-		nullCounter = new int[gridSize];
+	void Move()
+	{	
+		int randomValue = 0;
+		int countNull = 0;
 		for (int i = 0; i < gridSize; i++) 
 		{
-			nullCounter [i] = 0;
-		}
-		for (int j = 0; j < gridSize; j++) 
-		{ 
-			for (int i = 0; i < gridSize; i++) 
-			{	
-				if (board [i, j] == null)
-					
-					nullCounter[j]++;
-			}
-		}
+			for (int j = 0; j < gridSize; j++) {
+				
+				if (board [i, j] == null) {
+					countNull++;
+				} else {
+					//check khong cho tu null
+					if (board [i, j - countNull] == null) 
+					{
+						board [i, j].Drop (i, j - countNull);
+						//update y truoc khi gan vao board
+						board [i, j].y -= countNull;
+						board [i, j - countNull] = board [i, j];
 
-	}
-
-	//Cac Block con lai roi xuong
-	void Fall()
-	{
-
-
-		for (int j = 0; j < gridSize; j++) 
-		{ 
-			for (int i = 1; i < gridSize; i++) 
-			{	
-				//Bat dau tu i=1, kiem tra block duoi no co la null ko, co thi dich xuong.
-				if (board [i, j] != null) 
-				{   int a = 0;
-					int temp = i;
-					while (board [i - 1, j] == null) 
-					{ 
-						
-						a++;
-						//dich vi tri block xuong 1
-						//translate
-						board [i, j].transform.position -= someVector;
-						//test DoMove 1
-						//board [i, j].gameObject.transform.DOMove (board [i, j].transform.position - someVector, 0f).WaitForCompletion();
-
-						//Gan lai gia tri x cua block
-						board [i, j].x -= 1;
-						board [i, j].GetComponent<SpriteRenderer> ().sortingOrder ++;
-						//Dao vi tri tuong ung trong board
-						board [i - 1, j] = board [i, j];
+						board [i, j - countNull].gameObject.name = i + "" + (j - countNull);
+						board [i, j - countNull].gameObject.GetComponent<Renderer> ().sortingOrder = -(j - countNull);
 						board [i, j] = null;
-						//tiep tuc dich xuong
-						i--;
-						//ngan ko cho xuong -1
-						if (i == 0)
-							break;
-						
 					}
-					//Test DoMove2
-					//board [i, j].gameObject.transform.DOMove (board [i, j].transform.position - someVector*a, 0.5f).WaitForCompletion();
-					i = temp;
 				}
 			}
 
-		}
-	}
-
-	//Tao block lap day khoang trong
-	void Fill()
-	{ 
-		Vector3 offset;
-		int randomValue = 0;
-
-		for (int j = 0; j < gridSize; j++) 
-		{
-			//nullCounter[j] la so block null cua cot j trong board[i,j]
-			for (int amountToFill = nullCounter [j]; amountToFill > 0; amountToFill--) 
+			//kiem tra phan tu lon nhat
+			foreach (BlockController blockCheck in board) 
 			{	
-				//Check block co value max
-				foreach (BlockController blockCheck in board) 
-				{	
-					if(blockCheck!=null)
-					if (blockCheck.value >= maxValue)
-						maxValue = blockCheck.value;
-				}
+				if(blockCheck!=null)
+				if (blockCheck.value >= maxValue)
+					maxValue = blockCheck.value;
+			}
 
-				//Cac truong hop tuong ung
+			for (int k = 0; k < countNull; k++) {
+				var pos = ConvertBoardToPosition (i, gridSize+k);
+				//Random gia tri dua vao max hien tai
 				switch (maxValue) 
 				{
 				case 4:
@@ -406,27 +361,23 @@ public class GameController : SingletonMonoBehaviour<GameController>
 				default:
 					randomValue = (int)Random.Range (0f, 7f);
 					break;
-
-
 				}
-
-				// Vi du j = 0 , co 1 block null (amountToFill = nullCounter = 1)  , i = gridSize - amountToFill = 5-1 =4 => board[i,j] 0,4 la cho can fill
-				int i = gridSize - amountToFill;
-				//vi fillPos o vi tri [0,6] nen phai "+ 1"
-				offset = new Vector3 (offsetX*j, -(offsetY*(amountToFill+1)));
-				//Tao Block roi move di
-				//var block = Instantiate (blocks [randomValue], fillPos.position + offset, blocks [randomValue].transform.rotation);
-				//Test DoMoveFill
-				var block = Instantiate (blocks [randomValue], fillPos.position, blocks [randomValue].transform.rotation);
-				block.gameObject.transform.DOMove (block.transform.position + offset, 0.5f);
-				//Gan gia tri x,y cho block / Gan block vao board
+				var block = Instantiate (blocks [randomValue], pos, blocks [randomValue].transform.rotation);
+				var newY = gridSize - countNull + k;
 				block.x = i;
-				block.y = j;
-				board [i, j] = block.GetComponent<BlockController> ();
-				board [i, j].GetComponent<SpriteRenderer> ().sortingOrder = -(i);
+				block.y = newY;
+
+				board [i,  newY] = block.GetComponent<BlockController> ();
+				board[i,newY].Drop (i,newY);
+				board [i, newY].gameObject.name = i +""+ (newY);
+				board [i,newY].gameObject.GetComponent<Renderer> ().sortingOrder = -(newY);
 			}
-
+			
+			Debug.Log ("CHECK NULL "+i + " -  " + countNull);
+			countNull = 0;
 		}
+		isMoving = false;
+		if (!isMoving && !isMerging)
+			CheckGameOver();
 	}
-
 }

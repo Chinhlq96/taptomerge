@@ -67,7 +67,7 @@ Transform:
   m_GameObject: {fileID: 1261375811064520}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.7081928, y: 2.4789374, z: 0}
-  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4010367461166966}
   m_Father: {fileID: 0}
@@ -115,6 +115,7 @@ MonoBehaviour:
   normalForm: {fileID: 21300000, guid: af70cdeb3e0b1a04187c678f1b3cfd65, type: 3}
   activeForm: {fileID: 21300000, guid: d1500f522466fe54eb3bf41495b2edcb, type: 3}
   rightNowForm: {fileID: 0}
+  offset: 0
   isActivated: 0
   isTapped: 0
   Merged: 0
