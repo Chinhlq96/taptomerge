@@ -177,7 +177,7 @@ public class GameController : SingletonMonoBehaviour<GameController>
 		newBlock.transform.position -= new Vector3 (0f, offset, 0f);
 		Destroy (blockTap.gameObject);
 		board [newBlock.x, newBlock.y] = newBlock.GetComponent<BlockController> ();
-		CheckGameOver();
+		//CheckGameOver();
 		if (newBlock.value == 10) 
 		{
 			isGameOver = true;
@@ -458,7 +458,8 @@ public class GameController : SingletonMonoBehaviour<GameController>
 //	}
 
 	void Move()
-	{
+	{	bool doneMove = false;
+		int randomValue = 0;
 		int countNull = 0;
 		for (int i = 0; i < gridSize; i++) 
 		{
@@ -467,17 +468,60 @@ public class GameController : SingletonMonoBehaviour<GameController>
 				if (board [i, j] == null) {
 					countNull++;
 				} else {
-					board [i, j].Drop (i, j - countNull);
-					board [i, j - countNull] = board [i, j];
-					board [i, j - countNull].gameObject.name = i +""+ (j - countNull);
-					board [i, j - countNull].gameObject.GetComponent<Renderer> ().sortingOrder = -(j - countNull);
-					board [i, j] = null;
+					//check khong cho tu null
+					if (board [i, j - countNull] == null) 
+					{
+						board [i, j].Drop (i, j - countNull);
+						//update y truoc khi gan vao board
+						board [i, j].y -= countNull;
+						board [i, j - countNull] = board [i, j];
+
+						board [i, j - countNull].gameObject.name = i + "" + (j - countNull);
+						board [i, j - countNull].gameObject.GetComponent<Renderer> ().sortingOrder = -(j - countNull);
+						board [i, j] = null;
+					}
 				}
 			}
 
+			//kiem tra phan tu lon nhat
+			foreach (BlockController blockCheck in board) 
+			{	
+				if(blockCheck!=null)
+				if (blockCheck.value >= maxValue)
+					maxValue = blockCheck.value;
+			}
+
+
+
+
 			for (int k = 0; k < countNull; k++) {
 				var pos = ConvertBoardToPosition (i, gridSize+k);
-				var block = Instantiate (blocks [i], pos, blocks [i].transform.rotation);
+				//Random gia tri dua vao max hien tai
+				switch (maxValue) 
+				{
+				case 4:
+					randomValue = (int)Random.Range (0f, 3f);
+					break;
+				case 5:
+				case 6:
+					randomValue = (int)Random.Range (0f, 4f);
+					break;
+				case 7:
+					randomValue = (int)Random.Range (0f, 5f);
+					break;
+				case 8:
+					randomValue = (int)Random.Range (0f, 5f);
+					break;
+				case 9:
+					randomValue = (int)Random.Range (0f, 6f);
+					break;
+				default:
+					randomValue = (int)Random.Range (0f, 7f);
+					break;
+
+
+				}
+				var block = Instantiate (blocks [randomValue], pos, blocks [randomValue].transform.rotation);
 				var newY = gridSize - countNull + k;
 				block.x = i;
 				block.y = newY;
@@ -488,9 +532,16 @@ public class GameController : SingletonMonoBehaviour<GameController>
 				board [i,newY].gameObject.GetComponent<Renderer> ().sortingOrder = -(newY);
 			}
 
+			
+			
 			Debug.Log ("CHECK NULL "+i + " -  " + countNull);
 			countNull = 0;
 		}
+		doneMove = true;
+		if(doneMove==true)
+		CheckGameOver();
+
+		
 
 
 
