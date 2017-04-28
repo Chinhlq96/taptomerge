@@ -63,13 +63,13 @@ public class AdAssistant : SingletonMonoBehaviour<AdAssistant> {
     void Start() {
         #if !UNITY_WEBGL
         // Initialize
-        AdColony.Configure(Application.version.ToString(), GetAdColonyIDs(), new string[] { GetZoneId(AdNetwork.AdColony) });
-        Chartboost.setAutoCacheAds(true);
+     //   AdColony.Configure(Application.version.ToString(), GetAdColonyIDs(), new string[] { GetZoneId(AdNetwork.AdColony) });
+     //   Chartboost.setAutoCacheAds(true);
 
-        // AdColony
-        AdColony.OnVideoFinished += AdColonyReward;
-        AdColony.OnVideoFinished += (bool b) => {onAdClose.Invoke();};
-        AdColony.OnAdAvailabilityChange += OnAdAvailabilityChange;
+   //  //   // AdColony
+   //     AdColony.OnVideoFinished += AdColonyReward;
+   //     AdColony.OnVideoFinished += (bool b) => {onAdClose.Invoke();};
+//AdColony.OnAdAvailabilityChange += OnAdAvailabilityChange;
 
         // Chartboost
         Chartboost.didCloseInterstitial += ChartboostReward;
@@ -216,9 +216,9 @@ public class AdAssistant : SingletonMonoBehaviour<AdAssistant> {
                 OnAdOpen();
                 Chartboost.showInterstitial(CBLocation.Default);
                 yield break;
-            case AdNetwork.AdColony:
-                AdColony.ShowVideoAd(GetZoneId(network));
-                yield break;
+            //case AdNetwork.AdColony:
+            //    AdColony.ShowVideoAd(GetZoneId(network));
+            //    yield break;
             case AdNetwork.AdMob:
                 AdMob_Interstitial.Show();
                 yield break;

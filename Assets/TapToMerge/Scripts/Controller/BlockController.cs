@@ -5,55 +5,34 @@ using DG.Tweening;
 using EventManager;
 using System;
 
-public class BlockController : MonoBehaviour{
+public class BlockController : MonoBehaviour
+{
 
 
-	public int value;
-	public int x;
-	public int y;
-	[SerializeField]	private Sprite normalForm;
-	[SerializeField] 	private Sprite activeForm;
+    public int value;
+    public int x;
+    public int y;
+  
+    public float offset;
 
-	public float offset;
+    [SerializeField]
+    GameObject selectedObject;
 
-    SpriteRenderer _spriteRenderer;
-    SpriteRenderer spriteRenderer 
+
+    // Use this for initialization
+    void OnEnable()
     {
-        get{ 
-            if(_spriteRenderer==null)
-                _spriteRenderer = GetComponent<SpriteRenderer>();
-            return _spriteRenderer;
-        }
-    }
-    
-
-    public int sortingOrder
-    {
-        get { return spriteRenderer.sortingOrder; }
-        set { spriteRenderer.sortingOrder = value; }
-    }
-    
-
-	// Use this for initialization
-	void OnEnable () {
         isActivated = false;
-		offset = 0.07f;
-	}
+        offset = 0.07f;
+    }
 
-    public void Init(int x,int y,int value, int sortingOrder)
+    public void Init(int x, int y, int value)
     {
         this.x = x;
         this.y = y;
         this.value = value;
-        this.sortingOrder = sortingOrder;
-        gameObject.name =x + "" + y;
-    }
-    public void Init(int x,int y, int sortingOrder)
-    {
-        this.x = x;
-        this.y = y;
-        this.sortingOrder = sortingOrder;
-        gameObject.name =x + "" + y;
+        
+        gameObject.name = x + "" + y;
     }
 
     private bool _isActived;
@@ -62,56 +41,50 @@ public class BlockController : MonoBehaviour{
     {
         get { return _isActived; }
         set
-        { 
-                _isActived = value;
-                ActiveBlock(value);
+        {
+            _isActived = value;
+            ActiveBlock(value);
         }
     }
-    
 
-	void ActiveBlock (bool isActivated)
-	{
-        var newPos = GameController.Instance.ConvertBoardToPosition (x, y);
 
-        spriteRenderer.sprite = isActivated ?activeForm: normalForm;
-        if (isActivated)
+    void ActiveBlock(bool isActivated)
+    {
+        selectedObject.SetActive(isActivated);
+    }
+
+    public void Drop(int x, int y, bool delay = false)
+    {
+        var newPos = GameController.Instance.ConvertBoardToPosition(x, y);
+        float distance = Vector3.Distance(transform.position, newPos);
+        float timeDelay = delay ? (x + y * 5) * 0.05f : 0f;
+        transform.DOMoveY(newPos.y, distance / 100f).SetDelay(timeDelay);
+
+    }
+
+    public void Move(Vector3[] preBlockPos, Action action = null)
+    {
+        transform.DOPath(preBlockPos, .2f).OnComplete(() =>
         {
-            newPos = new Vector2(newPos.x,newPos.y+offset); 
-        }
+           
+            if (action != null)
+            {
+                action.Invoke();
+            }
+            DestroyBlock();
 
-        transform.position = newPos;
-	}
-
-	public void Drop(int x,int y,bool delay = false)
-	{
-		var newPos = GameController.Instance.ConvertBoardToPosition (x, y);
-		float distance = Vector3.Distance (transform.position, newPos);
-		float timeDelay = delay ? (x+y*5)*0.05f:0f;
-		transform.DOMoveY (newPos.y, distance / 25f).SetDelay(timeDelay);
-
-	}
-
-	public void Move (Vector3[] preBlockPos,Action action=null) {
-        transform.DOPath(preBlockPos, 0.2f).OnComplete(() =>
-        {
-                if (action!=null)
-                {
-                    action.Invoke();
-                }
-            DestroyBlock(); 
-            
         });
-	}
+    }
 
-	public void DestroyBlock () {
-        //Destroy(gameObject);
-        ContentMgr.Instance.Despaw (gameObject);
-	}
+    public void DestroyBlock()
+    {
+        ContentMgr.Instance.Despaw(gameObject);
+    }
 
-	public void OnMouseDown() 
-	{
-        this.PostEvent (EventID.BlockTap, this);
-       // GameController.Instance.CheckTap(new Vector2(x,y));
-	}
-        
+    public void OnMouseDown()
+    {
+        if (GameController.Instance.isMerging) return;
+        this.PostEvent(EventID.BlockTap, this);
+    }
+
 }
