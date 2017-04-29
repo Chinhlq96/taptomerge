@@ -37,17 +37,17 @@ public class BerryStoreAssistant : SingletonMonoBehaviour<BerryStoreAssistant>, 
 	}
 
     void InitializePurchasing() {
-        if (IsInitialized())
-            return;
+        //if (IsInitialized())
+        //    return;
 
-        ConfigurationBuilder builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
+        //ConfigurationBuilder builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
 
-        foreach (IAP iap in iaps)
-            builder.AddProduct(iap.id, ProductType.Consumable, new IDs() {
-                { iap.sku, AppleAppStore.Name},
-                { iap.sku, GooglePlay.Name}});
+        //foreach (IAP iap in iaps)
+        //    builder.AddProduct(iap.id, ProductType.Consumable, new IDs() {
+        //        { iap.sku, AppleAppStore.Name},
+        //        { iap.sku, GooglePlay.Name}});
 
-        UnityPurchasing.Initialize(this, builder);        
+        //UnityPurchasing.Initialize(this, builder);        
     }
 
     bool IsInitialized() {
