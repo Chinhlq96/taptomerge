@@ -38,14 +38,13 @@ GameObject:
   m_Component:
   - component: {fileID: 4495340147490598}
   - component: {fileID: 212346532047944708}
-  - component: {fileID: 114559310942326342}
   m_Layer: 0
   m_Name: MergeEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4495340147490598
 Transform:
   m_ObjectHideFlags: 1
@@ -53,8 +52,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1944559534166086}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.49999997, y: 0.49999997, z: 1}
+  m_LocalPosition: {x: 0, y: 0.142, z: 0}
+  m_LocalScale: {x: 0.99, y: 0.99, z: 1}
   m_Children: []
   m_Father: {fileID: 4839175718106598}
   m_RootOrder: 0
@@ -84,32 +83,9 @@ BoxCollider2D:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.11, y: 1.21}
-    newSize: {x: 1.21, y: 1.11}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.11, y: 1.21}
-  m_EdgeRadius: 0
---- !u!114 &114559310942326342
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1944559534166086}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae15e6a290988eb4bbad9aafbfba4324, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  preScale: {x: 0, y: 0}
+  m_Size: {x: 2.18, y: 2.31}
 --- !u!114 &114835169258161566
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -124,14 +100,8 @@ MonoBehaviour:
   value: 1
   x: 0
   y: 0
-  normalForm: {fileID: 21300000, guid: 12ce0966f8cb566498e1bce48e3de759, type: 3}
-  activeForm: {fileID: 21300000, guid: 65dce4f5b10275349bb67ff83bc1e7c5, type: 3}
-  rightNowForm: {fileID: 0}
   offset: 0
-  isActivated: 0
-  isTapped: 0
-  Merged: 1
-  boxMergeEffect: {fileID: 1944559534166086}
+  selectedObject: {fileID: 1944559534166086}
 --- !u!212 &212104665930542070
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -161,17 +131,12 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1986597507
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 12ce0966f8cb566498e1bce48e3de759, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 058ed83f503da524d81de842bb06f011, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 1.21, y: 1.11}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
 --- !u!212 &212346532047944708
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -201,14 +166,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1986597507
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300056, guid: 385b0ff4706cb3047a13a65cac9d2c22, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ee67d299f279fca4793f744cb15c370d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 0.6, y: 0.6}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0

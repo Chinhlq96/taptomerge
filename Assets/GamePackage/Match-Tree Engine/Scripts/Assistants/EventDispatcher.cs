@@ -27,12 +27,12 @@ namespace EventManager
         {
             #region
             // check if listener exist in distionary
-            //if (_listenersDict.ContainsKey(eventID))
-            //{
-            //    // add callback to our collection
-            //    _listenersDict[eventID].Add(callback);
-            //}
-            //else
+            if (_listenersDict.ContainsKey(eventID))
+            {
+                // add callback to our collection
+                _listenersDict[eventID].Add(callback);
+            }
+            else
             if (!_listenersDict.ContainsKey(eventID))
             {
                 // add new key-value pair
@@ -65,15 +65,15 @@ namespace EventManager
                     {
                         Debug.LogWarningFormat("Error when PostEvent : {0}, message : {1}", eventID.ToString(), e.Message);
                         // remove listener at i - that cause the exception
-                        actionList.RemoveAt(i);
-                        if (actionList.Count == 0)
-                        {
-                            // no listener remain, then delete this key
-                            _listenersDict.Remove(eventID);
-                        }
-                        // reduce amount and index for the next loop
-                        amount--;
-                        i--;
+                        //actionList.RemoveAt(i);
+                        //if (actionList.Count == 0)
+                        //{
+                        //    // no listener remain, then delete this key
+                        //    _listenersDict.Remove(eventID);
+                        //}
+                        //// reduce amount and index for the next loop
+                        //amount--;
+                        //i--;
                     }
                 }
             }
@@ -93,25 +93,25 @@ namespace EventManager
         public static void RemoveListener(EventID eventID, Action<Component, object> callback)
         {
             #region
-            _listenersDict.Remove(eventID);
+            //_listenersDict.Remove(eventID);
 
-            //List<Action<Component, object>> actionList;
-            //if (_listenersDict.TryGetValue(eventID, out actionList))
-            //{
-            //    if (actionList.Contains(callback))
-            //    {
-            //        actionList.Remove(callback);
-            //        if (actionList.Count == 0)// no listener remain for this event
-            //        {
-            //            _listenersDict.Remove(eventID);
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    // the listeners not exist
-            //    Debug.LogWarningFormat(null, "RemoveListener, event : {0}, no listener found", eventID.ToString());
-            //}
+            List<Action<Component, object>> actionList;
+            if (_listenersDict.TryGetValue(eventID, out actionList))
+            {
+                if (actionList.Contains(callback))
+                {
+                    actionList.Remove(callback);
+                    if (actionList.Count == 0)// no listener remain for this event
+                    {
+                        _listenersDict.Remove(eventID);
+                    }
+                }
+            }
+            else
+            {
+                // the listeners not exist
+                Debug.LogWarningFormat(null, "RemoveListener, event : {0}, no listener found", eventID.ToString());
+            }
             #endregion
         }
 

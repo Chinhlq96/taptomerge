@@ -3,100 +3,89 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using EventManager;
+using System;
 
-public class BlockController : MonoBehaviour{
+public class BlockController : MonoBehaviour
+{
+    public int value;
+    public int x;
+    public int y;
+  
+    public float offset;
 
-	//[SerializeField] 	private int ID;
-	private static BlockController _instance;
-	public int value;
-	public int x;
-	public int y;
-	[SerializeField]	private Sprite normalForm;
-	[SerializeField] 	private Sprite activeForm;
-	[SerializeField]	private Sprite rightNowForm;
-	public float offset;
-	public bool isActivated;
-	public bool isTapped;
-
-	public bool Merged;
-	public GameObject boxMergeEffect;
+    [SerializeField]
+    GameObject selectedObject;
 
 
+    // Use this for initialization
+    void OnEnable()
+    {
+        isActivated = false;
+        offset = 0.07f;
+    }
 
-	public static BlockController Instance { get; private set; }
+    public void Init(int x, int y, int value)
+    {
+        this.x = x;
+        this.y = y;
+        this.value = value;
+        
+        gameObject.name = x + "" + y;
+    }
 
-	void Awake()
-	{
-		Instance = this;
-	}
+    private bool _isActived;
 
-	// Use this for initialization
-	void Start () {
+    public bool isActivated
+    {
+        get { return _isActived; }
+        set
+        {
+            _isActived = value;
+            ActiveBlock(value);
+        }
+    }
 
-		isActivated = false;
-		offset = 0.07f;
-		Merged = false;
-	}
 
-	void Update()
-	{
-		ActiveBlock ();
-		//MergeEffect ();
-	}
+    void ActiveBlock(bool isActivated)
+    {
+        selectedObject.SetActive(isActivated);
+    }
 
-	public void ActiveBlock ()
-	{
-		rightNowForm = GetComponent<SpriteRenderer> ().sprite;
-		if (isActivated) 
-		{
-			GetComponent<SpriteRenderer>().sprite = activeForm;
-			if (rightNowForm != GetComponent<SpriteRenderer> ().sprite) 
-			{
-				transform.position = new Vector2 (transform.position.x, transform.position.y + offset);
-			}
-		}
-		else
-		{
-			GetComponent<SpriteRenderer>().sprite = normalForm;
-			if (rightNowForm != GetComponent<SpriteRenderer> ().sprite) 
-			{
-				transform.position = new Vector2 (transform.position.x, transform.position.y - offset);
-			}
-		}
-	}
-	float speed=1f;
-	public void Drop(int x,int y,bool delay = false)
-	{
-		var newPos = GameController.Instance.ConvertBoardToPosition (x, y);
-		float distance = Vector3.Distance (transform.position, newPos);
-		float timeDelay = delay ? (x + y * 5) * 0.05f : 0f;
-		transform.DOMoveY (newPos.y, distance / 25f).SetDelay (timeDelay);
+    public void Drop(int x, int y, bool delay = false)
+    {
+        var newPos = GameController.Instance.ConvertBoardToPosition(x, y);
+        float distance = Vector3.Distance(transform.position, newPos);
+        float timeDelay = delay ? (x + y * 5) * 0.05f : 0f;
+        transform.DOMoveY(newPos.y, distance / 100f).SetDelay(timeDelay);
 
-	}
+    }
 
-	public void Move (Vector3[] preBlockPos) {
-		transform.DOPath (preBlockPos, 0.2f).OnComplete (() => {
-			DestroyBlock ();
-		});
-	}
+    public void Move(Vector3[] preBlockPos, Action action = null)
+    {
+        transform.DOPath(preBlockPos, .2f).OnComplete(() =>
+        {
+           
+            if (action != null)
+            {
+                action.Invoke();
+            }
+            DestroyBlock();
 
-	public void DestroyBlock () {
-		Destroy (gameObject);
-	}
+        });
+    }
 
-	public void OnMouseDown() 
-	{
-		isTapped = true;
-		if (!GameController.Instance.isMoving && !GameController.Instance.isMerging) {
-			this.PostEvent (EventID.BlockTap, this);
-		}
-	}
+    public void DestroyBlock()
+    {
+        ContentMgr.Instance.Despaw(gameObject);
+    }
 
-	public void MergeEffect ()
-	{
-		if (Merged) 
-		{
-			boxMergeEffect.SetActive (true);
-		}
-	}
+    public void OnMouseDown()
+    {
+
+        Debug.Log("tap");
+        if (GameController.Instance.isMerging) return;
+        this.PostEvent(EventID.BlockTap, this);
+        Debug.Log("tap success");
+    }
+		
 }
