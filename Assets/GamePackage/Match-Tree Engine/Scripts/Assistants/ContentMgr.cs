@@ -16,6 +16,13 @@ public class ContentMgr : SingletonMonoBehaviour<ContentMgr> {
         return null;
 	}
 
+    public T GetItem<T>(string key,Transform parent, Vector3 position) where T : Component
+    {
+        zObj = GetItem(key);
+        zObj.transform.position = position;
+        zObj.transform.SetParent(parent);
+        return zObj.GetComponent<T>();
+    }
 
     public T GetItem<T> (string key, Vector3 position) where T : Component {
 		zObj = GetItem (key);

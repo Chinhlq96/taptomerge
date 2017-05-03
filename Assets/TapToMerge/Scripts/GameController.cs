@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using EventManager;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public class GameController : SingletonMonoBehaviour<GameController>
 {
@@ -13,8 +14,6 @@ public class GameController : SingletonMonoBehaviour<GameController>
     private int maxValue = 0;
 
     public bool isMerging;
-	public bool isMoving;
-  //  public float offset = 0.07f;
 
     //-------
     // Kiem tra game over = 10 hoac het block ket noi
@@ -27,9 +26,16 @@ public class GameController : SingletonMonoBehaviour<GameController>
     private Transform startPos;
 
     [SerializeField]
+    private float offsetY;
+    [SerializeField]
     private float offsetX;
     [SerializeField]
-    private float offsetY;
+    Text messageText;
+
+    const string messageGame = "Combine The Titles To Get 10";
+    const string messageGameOver = "No Matched !";
+    const string messageShare = "Share The Result";
+
 
     void OnEnable()
     {
@@ -41,20 +47,19 @@ public class GameController : SingletonMonoBehaviour<GameController>
     {
         this.RemoveListener(EventID.BlockTap, (sender, param) => CheckTap((BlockController)param));
     }
-    void Start()
+    public void StartGame()
     {
-		isMoving = false;
         isMerging = false;
         score = 0;
         InstanceBlocks();
-
+        messageText.text = messageGame;
     }
 
     void Update()
     {	//CheckMaxValue ();
 
-        if (isGameOver)
-            Debug.Log("Game Over!");
+        //  if (isGameOver)
+        //      Debug.Log("Game Over!");
     }
 
     void InstanceBlocks()
@@ -66,12 +71,12 @@ public class GameController : SingletonMonoBehaviour<GameController>
             {
                 var pos = ConvertBoardToPosition(x, y + 2 * gridSize);
                 var value = (int)Random.Range(1f, 5f);
-                var block = ContentMgr.Instance.GetItem<BlockController>("block" + value, pos);
+                var block = ContentMgr.Instance.GetItem<BlockController>("block" + value, startPos, pos);
 
                 block.Init(x, y, value);
                 board[x, y] = block;
                 board[x, y].Drop(x, y, true);
-              
+
             }
         }
     }
@@ -79,22 +84,22 @@ public class GameController : SingletonMonoBehaviour<GameController>
 
     public Vector3 ConvertBoardToPosition(int x, int y)
     {
-        Vector3 offset = new Vector3(offsetY * x, offsetX * y);
+        Vector3 offset = new Vector3(offsetX * x, offsetY * y);
         return startPos.position + offset;
     }
 
 
     public void CheckTap(BlockController blockTap)
     {
-        if (isMerging||isMoving)
+        if (isMerging)
             return;
         if (blocksActivated.Find(x => x == blockTap) == null)
         {
             foreach (BlockController block in blocksActivated)
             {
-                if (block!=null)
+                if (block != null)
                 {
-                    block.isActivated = false;    
+                    block.isActivated = false;
                 }
             }
             blocksActivated = BFSCheckBlock(blockTap);
@@ -109,7 +114,8 @@ public class GameController : SingletonMonoBehaviour<GameController>
         else
         {
             isMerging = true;
-            int  count = 0;
+            int count = 0;
+
 
             foreach (BlockController block in blocksActivated)
             {
@@ -120,8 +126,9 @@ public class GameController : SingletonMonoBehaviour<GameController>
                     var listOfPoint = new List<Vector3>();
 
                     Vector3[] path = BFSFindPath(block, blockTap).ToArray();
-                //    block.sortingOrder -= 10;
-                    block.Move(path, () => { board[block.x, block.y]=null; });
+
+                    block.Move(path, () => { board[block.x, block.y] = null; });
+
                 }
 
             }
@@ -143,9 +150,10 @@ public class GameController : SingletonMonoBehaviour<GameController>
         ContentMgr.Instance.Despaw(blockTap.gameObject);
         //board[blockTap.x, blockTap.y] = null;
         var newValue = blockTap.value + 1;
-        var newBlock = ContentMgr.Instance.GetItem<BlockController>("block" + newValue, blockTap.transform.position);
-        newBlock.Init(blockTap.x, blockTap.y,newValue);
- 
+        var pos = ConvertBoardToPosition(blockTap.x, blockTap.y);
+        var newBlock = ContentMgr.Instance.GetItem<BlockController>("block" + newValue, startPos, pos);
+        newBlock.Init(blockTap.x, blockTap.y, newValue);
+
         newBlock.isActivated = false;
 
         board[newBlock.x, newBlock.y] = newBlock;
@@ -153,10 +161,16 @@ public class GameController : SingletonMonoBehaviour<GameController>
         if (newBlock.value == 10)
         {
             isGameOver = true;
+            Debug.Log("Game Over!");
         }
-		isMerging = false;
-		if (!isMerging)
-        	Move();
+
+        Move();
+        if (CheckGameOver())
+        {
+            messageText.text = messageGameOver;
+        }
+        isMerging = false;
+		Debug.Log(isMerging);
     }
     List<BlockController> blocksActivated = new List<BlockController>();
 
@@ -279,43 +293,41 @@ public class GameController : SingletonMonoBehaviour<GameController>
         return result;
     }
 
-    void CheckGameOver()
+    bool CheckGameOver()
     {
-        foreach (BlockController block in board)
-        {
-           bool checkGameOver = true;
-            for (int x = 0; x < gridSize; x ++)
-                for (int y = 0; y < gridSize; y ++)
+        bool checkGameOver = true;
+        //foreach (BlockController block in board)
+        //{
+        for (int x = 0; x < gridSize; x += 1)
+            for (int y = 0; y < gridSize; y += 1)
+            {
+                var currentBlock = board[x, y];
+                if (currentBlock == null)
                 {
-                    var currentBlock = board[x, y];
-                    if (currentBlock == null)
-                    {
-                        Debug.Log("--------------");
-                        continue;
-                    }
-                    //Kiem tra 4 huong.
-                    if ((currentBlock.x + 1 < gridSize)
-                        && (board[currentBlock.x + 1, currentBlock.y].value == currentBlock.value))
-                        checkGameOver = false;
-                    if ((currentBlock.y + 1 < gridSize)
-                        && (board[currentBlock.x, currentBlock.y + 1].value == currentBlock.value))
-                        checkGameOver = false;
-                    if ((currentBlock.x - 1 >= 0)
-                        && (board[currentBlock.x - 1, currentBlock.y].value == currentBlock.value))
-                        checkGameOver = false;
-                    if ((currentBlock.y - 1 >= 0)
-                        && (board[currentBlock.x, currentBlock.y - 1].value == currentBlock.value))
-                        checkGameOver = false;
+                    Debug.Log("--------------");
+                    continue;
                 }
-            if (checkGameOver)
-                isGameOver = true;
-        }
+                //Kiem tra 4 huong.
+                if ((currentBlock.x + 1 < gridSize)
+                    && (board[currentBlock.x + 1, currentBlock.y].value == currentBlock.value))
+                    checkGameOver = false;
+                if ((currentBlock.y + 1 < gridSize)
+                    && (board[currentBlock.x, currentBlock.y + 1].value == currentBlock.value))
+                    checkGameOver = false;
+                if ((currentBlock.x - 1 >= 0)
+                    && (board[currentBlock.x - 1, currentBlock.y].value == currentBlock.value))
+                    checkGameOver = false;
+                if ((currentBlock.y - 1 >= 0)
+                    && (board[currentBlock.x, currentBlock.y - 1].value == currentBlock.value))
+                    checkGameOver = false;
+            }
+
+        return checkGameOver;
     }
 
 
     void Move()
     {
-		isMoving = true;
         int randomValue = 0;
         int countNull = 0;
         for (int i = 0; i < gridSize; i++)
@@ -335,7 +347,7 @@ public class GameController : SingletonMonoBehaviour<GameController>
                         board[i, j].Drop(i, j - countNull);
 
                         board[i, j - countNull] = board[i, j];
-                        board[i, j - countNull].Init(i,j-countNull,board[i, j].value);
+                        board[i, j - countNull].Init(i, j - countNull, board[i, j].value);
 
                         board[i, j] = null;
                     }
@@ -378,14 +390,12 @@ public class GameController : SingletonMonoBehaviour<GameController>
                 }
 
                 var newY = gridSize - countNull + k;
-                board[i, newY] =ContentMgr.Instance.GetItem<BlockController>("block"+(randomValue+1), pos);
+                board[i, newY] = ContentMgr.Instance.GetItem<BlockController>("block" + (randomValue + 1), startPos, pos);
                 board[i, newY].Init(i, newY, randomValue + 1);
                 board[i, newY].Drop(i, newY);
 
             }
             countNull = 0;
-			if (!isMoving)
-				CheckGameOver();
         }
     }
 }
