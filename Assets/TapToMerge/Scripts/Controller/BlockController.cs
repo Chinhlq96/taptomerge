@@ -83,8 +83,10 @@ public class BlockController : MonoBehaviour
 
     public void OnMouseDown()
     {
+        Debug.Log("tap");
         if (GameController.Instance.isMerging) return;
         this.PostEvent(EventID.BlockTap, this);
+        Debug.Log("tap success");
     }
 
 }
