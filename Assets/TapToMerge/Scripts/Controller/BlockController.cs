@@ -84,10 +84,12 @@ public class BlockController : MonoBehaviour
     {
 
         Debug.Log("tap");
-        if (GameController.Instance.isMerging) return;
+
+        if (GameController.Instance.isMerging || GameController.Instance.currentState == GameController.GameState.Waiting) return;
         this.PostEvent(EventID.BlockTap, this);
 		//GameController.Instance.CheckTap(this);
         Debug.Log("tap success");
+
     }
 		
 }

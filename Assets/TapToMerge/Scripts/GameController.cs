@@ -14,12 +14,17 @@ public class GameController : SingletonMonoBehaviour<GameController>
     private int maxValue = 0;
 
     public bool isMerging;
+
+	public bool reachedTen;
+
     //-------
     // Kiem tra game over = 10 hoac het block ket noi
     private bool isGameOver;
 
     private BlockController[,] board;
     //-------
+
+	public GameState currentState;
 
     [SerializeField]
     private Transform startPos;
@@ -30,8 +35,6 @@ public class GameController : SingletonMonoBehaviour<GameController>
     private float offsetX;
     [SerializeField]
     Text messageText;
-	[SerializeField]
-	Text scoreText;
 
     const string messageGame = "Combine The Titles To Get 10";
     const string messageGameOver = "No Matched !";
@@ -50,10 +53,12 @@ public class GameController : SingletonMonoBehaviour<GameController>
     }
     public void StartGame()
     {
-        isMerging = false;
+        isMerging = true;
         score = 0;
+		scoreText.text = "" + score;
         InstanceBlocks();
         messageText.text = messageGame;
+		reachedTen = false;
     }
 
     void Update()
@@ -64,24 +69,39 @@ public class GameController : SingletonMonoBehaviour<GameController>
     }
 
     void InstanceBlocks()
-    {
+	{	
+		
         board = new BlockController[gridSize, gridSize];
-        for (int x = 0; x < gridSize; x++)
-        {
-            for (int y = 0; y < gridSize; y++)
-            {
-                var pos = ConvertBoardToPosition(x, y + 2 * gridSize);
-                var value = (int)Random.Range(1f, 5f);
-                var block = ContentMgr.Instance.GetItem<BlockController>("block" + value, startPos, pos);
+		if (isMerging) {
+			for (int x = 0; x < gridSize; x++) 
+			{
+				for (int y = 0; y < gridSize; y++) 
+				{
+					var pos = ConvertBoardToPosition (x, y + 2 * gridSize);
+					var value = (int)Random.Range (1f, 5f);
+					var block = ContentMgr.Instance.GetItem<BlockController> ("block" + value, startPos, pos);
 
-                block.Init(x, y, value);
-                board[x, y] = block;
-                board[x, y].Drop(x, y, true);
+					block.Init (x, y, value);
+					board [x, y] = block;
+					board [x, y].Drop (x, y, true);
 
-            }
-        }
+					Debug.Log("x"+x+"y"+y);
+					if (x >=4 && y >= 4) {
+						Invoke ("WaitingForDroped", 1.4f);
+					}
+
+				}
+
+			
+			}
+		}
+	
+
     }
-
+	void WaitingForDroped()
+	{
+		isMerging = false;
+	}
 
     public Vector3 ConvertBoardToPosition(int x, int y)
     {
@@ -92,7 +112,8 @@ public class GameController : SingletonMonoBehaviour<GameController>
 
     public void CheckTap(BlockController blockTap)
     {
-
+        if (isMerging)
+            return;
         if (blocksActivated.Find(x => x == blockTap) == null)
         {
             foreach (BlockController block in blocksActivated)
@@ -102,49 +123,48 @@ public class GameController : SingletonMonoBehaviour<GameController>
                     block.isActivated = false;
                 }
             }
-			blockTap.isActivated = true;
             blocksActivated = BFSCheckBlock(blockTap);
             if (blocksActivated.Count == 0)
                 blockTap.isActivated = false;
             else
             {
+                blockTap.isActivated = true;
                 blocksActivated.Add(blockTap);
             }
         }
         else
         {
-			isMerging = true;
+            isMerging = true;
+            int count = 0;
 
-			Debug.Log ("CT1");
-			//So Block pha duoc
-			int count = 0, saveCount = blocksActivated.Count;
-			for (int i = 0; i < blocksActivated.Count;) {
-				//foreach (BlockController block in blocksActivated) {
-				//Move ve theo path
-				BlockController block = blocksActivated [0];
-				if (block != blockTap) {
-					Vector3[] path = BFSFindPath (block, blockTap).ToArray ();
-					Debug.Log ("  " + block.gameObject.name);
-					block.Move (path, () => { 
-						board [block.x, block.y] = null; 
-					});
-				}
-				blocksActivated.Remove (block);
-				count++;
-				Debug.Log ("BC" + blocksActivated.Count);
-			}
-			Debug.Log ("CT2");
+
+            foreach (BlockController block in blocksActivated)
+            {
+                //Move ve theo path
+                count++;
+                if (block != blockTap)
+                {
+                    var listOfPoint = new List<Vector3>();
+
+                    Vector3[] path = BFSFindPath(block, blockTap).ToArray();
+
+                    block.Move(path, () => { board[block.x, block.y] = null; });
+
+                }
+
+            }
+            count--;
 			// Tinh diem
-			int pointPerBlock = blockTap.value + 2;
-			if (blockTap.value < 3)
-				score += pointPerBlock * (blockTap.value * 2 + count - 2);
-			else
-				score += pointPerBlock * (blockTap.value * 2 + count - 2) - (blockTap.value - 2);
-			scoreText.text = "" + score;
-			StartCoroutine (WaitMerge (.2f, blockTap));
-        }
-    }
+            int pointPerBlock = blockTap.value + 2;
+            if (blockTap.value < 3)
+                score += pointPerBlock * (blockTap.value * 2 + count - 2);
+            else
+                score += pointPerBlock * (blockTap.value * 2 + count - 2) - (blockTap.value - 2);
 
+            StartCoroutine(WaitMerge(.2f, blockTap));
+        }
+
+    }
     IEnumerator WaitMerge(float duration, BlockController blockTap)
     {
         yield return new WaitForSeconds(duration);   //Wait
@@ -161,8 +181,14 @@ public class GameController : SingletonMonoBehaviour<GameController>
 
         if (newBlock.value == 10)
         {
-            isGameOver = true;
-            Debug.Log("Game Over!");
+			if (reachedTen == false) 
+			{
+				UIManager.Instance.ShowPage ("TenAchievedPage");
+				currentState = GameState.Waiting;
+				isGameOver = true;
+				Debug.Log ("Game Over!");
+				reachedTen = true;
+			}
         }
 
         Move();
@@ -170,7 +196,8 @@ public class GameController : SingletonMonoBehaviour<GameController>
         {
             messageText.text = messageGameOver;
         }
-		isMerging = false;
+        isMerging = false;
+		Debug.Log(isMerging);
     }
     List<BlockController> blocksActivated = new List<BlockController>();
 
@@ -183,7 +210,6 @@ public class GameController : SingletonMonoBehaviour<GameController>
         queue.Enqueue(block);
         while (queue.Count > 0)
         {
-			Debug.Log (result.Count);
             currentBlock = queue.Dequeue();
             if (currentBlock.value == -1)
             {
@@ -243,7 +269,6 @@ public class GameController : SingletonMonoBehaviour<GameController>
         queue.Enqueue(block);
         while (queue.Count > 0)
         {
-//			Debug.Log("L--------------");
             currentBlock = queue.Dequeue();
             if (currentBlock.value == -1)
             {
@@ -256,7 +281,6 @@ public class GameController : SingletonMonoBehaviour<GameController>
             {
                 break;
             }
-//			Debug.Log ("null?"+parentBlock[currentBlock.x, currentBlock.y]);
 
             //Kiem tra tim 4 huong.
             if ((currentBlock.x + 1 < gridSize) && (board[currentBlock.x + 1, currentBlock.y].isActivated)
@@ -284,24 +308,16 @@ public class GameController : SingletonMonoBehaviour<GameController>
                 parentBlock[currentBlock.x, currentBlock.y - 1] = currentBlock;
             }
         }
-//		for (int i = 0; i < gridSize; i++)
-//		{
-//			for (int j = 0; j < gridSize; j++)
-//			{
-//				Debug.Log (parentBlock [i, j]);
-//			}
-//		}
-//		Debug.Log ("  "+targetBlock.gameObject.name);
 
         currentBlock = parentBlock[targetBlock.x, targetBlock.y];
-
-		result.Add (targetBlock.transform.position);
-		while ((currentBlock.x != block.x) || (currentBlock.y != block.y)) {
-			result.Add (currentBlock.transform.position);
-			currentBlock = parentBlock [currentBlock.x, currentBlock.y];
-		}
-		result.Reverse ();
-		return result;
+        result.Add(targetBlock.transform.position);
+        while ((currentBlock.x != block.x) || (currentBlock.y != block.y))
+        {
+            result.Add(currentBlock.transform.position);
+            currentBlock = parentBlock[currentBlock.x, currentBlock.y];
+        }
+        result.Reverse();
+        return result;
     }
 
     bool CheckGameOver()
@@ -409,4 +425,38 @@ public class GameController : SingletonMonoBehaviour<GameController>
             countNull = 0;
         }
     }
+
+	public enum GameState
+	{
+		Start,
+		Play,
+		Pause,
+		Waiting
+	}
+
+	public void changeToPlayState ()
+	{
+		currentState = GameState.Play;
+	}
+
+	public void DeleteGrid()
+	{
+		foreach(BlockController blockCheck in board)
+		{
+			Destroy(blockCheck.gameObject);
+		}
+	}
+	public void HideGrid()
+	{
+		foreach(BlockController blockCheck in board)
+		{
+			blockCheck.gameObject.SetActive(false);
+		}
+	}
+	public void ShowGrid()
+	{
+		foreach (BlockController blockCheck in board) {
+			blockCheck.gameObject.SetActive (true);
+		}
+	}
 }
