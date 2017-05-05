@@ -70,22 +70,25 @@ public class BlockController : MonoBehaviour
                 action.Invoke();
             }
             DestroyBlock();
-
         });
     }
+
 
     public void DestroyBlock()
     {
         ContentMgr.Instance.Despaw(gameObject);
+//		Destroy (gameObject);
     }
 
     public void OnMouseDown()
     {
 
         Debug.Log("tap");
-        if (GameController.Instance.isMerging) return;
-        this.PostEvent(EventID.BlockTap, this);
-        Debug.Log("tap success");
+		if (!GameController.Instance.isMerging) {
+			this.PostEvent (EventID.BlockTap, this);
+			//GameController.Instance.CheckTap(this);
+			Debug.Log ("tap success");
+		}
     }
 		
 }
