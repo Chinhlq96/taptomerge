@@ -70,13 +70,14 @@ public class BlockController : MonoBehaviour
                 action.Invoke();
             }
             DestroyBlock();
-
         });
     }
+
 
     public void DestroyBlock()
     {
         ContentMgr.Instance.Despaw(gameObject);
+//		Destroy (gameObject);
     }
 
     public void OnMouseDown()
@@ -85,6 +86,7 @@ public class BlockController : MonoBehaviour
         Debug.Log("tap");
         if (GameController.Instance.isMerging) return;
         this.PostEvent(EventID.BlockTap, this);
+		//GameController.Instance.CheckTap(this);
         Debug.Log("tap success");
     }
 		
