@@ -15,12 +15,16 @@ public class GameController : SingletonMonoBehaviour<GameController>
 
     public bool isMerging;
 
+	public bool reachedTen;
+
     //-------
     // Kiem tra game over = 10 hoac het block ket noi
     private bool isGameOver;
 
     private BlockController[,] board;
     //-------
+
+	public GameState currentState;
 
     [SerializeField]
     private Transform startPos;
@@ -53,6 +57,7 @@ public class GameController : SingletonMonoBehaviour<GameController>
         score = 0;
         InstanceBlocks();
         messageText.text = messageGame;
+		reachedTen = false;
     }
 
     void Update()
@@ -160,8 +165,14 @@ public class GameController : SingletonMonoBehaviour<GameController>
 
         if (newBlock.value == 10)
         {
-            isGameOver = true;
-            Debug.Log("Game Over!");
+			if (reachedTen == false) 
+			{
+				UIManager.Instance.ShowPage ("TenAchievedPage");
+				currentState = GameState.Waiting;
+				isGameOver = true;
+				Debug.Log ("Game Over!");
+				reachedTen = true;
+			}
         }
 
         Move();
@@ -398,4 +409,25 @@ public class GameController : SingletonMonoBehaviour<GameController>
             countNull = 0;
         }
     }
+
+	public enum GameState
+	{
+		Start,
+		Play,
+		Pause,
+		Waiting
+	}
+
+	public void changeToPlayState ()
+	{
+		currentState = GameState.Play;
+	}
+
+	public void DeleteGrid ()
+	{
+		foreach (BlockController blockCheck in board) 
+		{
+			Destroy (blockCheck.gameObject);
+		}
+	}
 }
